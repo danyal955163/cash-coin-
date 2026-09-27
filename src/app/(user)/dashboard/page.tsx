@@ -39,7 +39,7 @@ export default async function DashboardPage() {
         </div>
         <div className="flex flex-wrap gap-3">
           <Link href="/packages" className="rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700">Buy Package</Link>
-          <Link href="/packages" className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-emerald-600 hover:text-emerald-600">Deposit</Link>
+          <Link href="/deposit" className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-emerald-600 hover:text-emerald-600">Deposit</Link>
           <Link href="/tasks" className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-emerald-600 hover:text-emerald-600">View Tasks</Link>
           <Link href="/wallet" className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-emerald-600 hover:text-emerald-600">View Wallet</Link>
           <Link href="/withdrawal" className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-emerald-600 hover:text-emerald-600">Withdraw</Link>
