@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 
-import { applyReferral, signUp } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/client";
+import { signUp } from "@/lib/auth";
 
 export default function SignupForm({ initialReferralCode = "" }: { initialReferralCode?: string }) {
   const router = useRouter();
@@ -38,9 +39,17 @@ export default function SignupForm({ initialReferralCode = "" }: { initialReferr
       }
 
       if (referralCode.trim() && data.user) {
-        const referralResult = await applyReferral(data.user.id, referralCode);
-        if (referralResult.error) {
-          toast.error("Account created, but the referral reward could not be applied.");
+        const { data: referralResult, error: referralError } = await createClient().rpc("process_referral", {
+          p_user_id: data.user.id,
+          p_referral_code: referralCode.trim(),
+        });
+        if (referralError) {
+          const message = referralError.message.toLowerCase();
+          toast(message.includes("not_found") || message.includes("code") ? "Invalid referral code, skipped." : "Referral skipped; your account was created.");
+        } else if (referralResult) {
+          toast.success("Referral applied! Welcome bonus credited.");
+        } else {
+          toast("Invalid referral code, skipped.");
         }
       }
 
