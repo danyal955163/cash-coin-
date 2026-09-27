@@ -46,6 +46,11 @@ export default function LoginForm() {
           Password
           <input className="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required autoComplete="current-password" />
         </label>
+        <div className="text-right">
+          <Link href="/forgot-password" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700">
+            Forgot Password?
+          </Link>
+        </div>
         <button className="w-full rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60" type="submit" disabled={isLoading}>
           {isLoading ? "Logging in..." : "Login"}
         </button>

@@ -1,14 +1,8 @@
 import { redirect } from "next/navigation";
 
-import { createClient } from "@/lib/supabase/server";
 import SignOutButton from "@/components/auth/SignOutButton";
-
-const cards = [
-  { title: "Deposit Wallet", value: "Coming soon", description: "Your deposit balance will appear here." },
-  { title: "Withdrawal Wallet", value: "Coming soon", description: "Your withdrawal balance will appear here." },
-  { title: "Coins", value: "0", description: "Complete tasks to earn coins." },
-  { title: "Package", value: "No package", description: "Package details will appear here." },
-];
+import ReferralLink from "@/components/dashboard/ReferralLink";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
   const supabase = createClient();
@@ -20,9 +14,20 @@ export default async function DashboardPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("username")
+    .select("username, deposit_wallet, withdrawal_wallet, coins, package_name, package_expires_at, referral_code")
     .eq("id", user.id)
     .maybeSingle();
+
+  const expiryDate = profile?.package_expires_at
+    ? new Intl.DateTimeFormat("en-PK", { dateStyle: "medium" }).format(new Date(profile.package_expires_at))
+    : null;
+  const username = profile?.username ?? "";
+  const cards = [
+    { title: "Deposit Wallet", value: `${profile?.deposit_wallet ?? 0} PKR`, description: "Available deposit balance." },
+    { title: "Withdrawal Wallet", value: `${profile?.withdrawal_wallet ?? 0} PKR`, description: "Available withdrawal balance." },
+    { title: "Coins", value: String(profile?.coins ?? 0), description: "Your earned coins." },
+    { title: "Package", value: profile?.package_name ?? "No package", description: expiryDate ? `Expires: ${expiryDate}` : "No expiry date set." },
+  ];
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -35,10 +40,8 @@ export default async function DashboardPage() {
       <section className="mx-auto max-w-6xl px-6 py-12 lg:px-8">
         <div className="mb-10">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-600">Dashboard</p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight text-gray-900">
-            Welcome, {user.email ?? "CashCoin member"}
-          </h1>
-          <p className="mt-2 text-gray-600">Your username: {profile?.username ?? "Not set yet"}</p>
+          <h1 className="mt-3 text-3xl font-bold tracking-tight text-gray-900">Welcome, {user.email ?? "CashCoin member"}</h1>
+          <p className="mt-2 text-gray-600">Your username: {username || "Not set yet"}</p>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {cards.map((card) => (
@@ -49,6 +52,7 @@ export default async function DashboardPage() {
             </article>
           ))}
         </div>
+        <ReferralLink username={username} />
       </section>
     </main>
   );

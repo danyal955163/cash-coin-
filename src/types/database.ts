@@ -14,6 +14,12 @@ export interface Database {
           username: string | null;
           avatar_url: string | null;
           referred_by: string | null;
+          deposit_wallet: number;
+          withdrawal_wallet: number;
+          coins: number;
+          package_name: string | null;
+          package_expires_at: string | null;
+          referral_code: string | null;
           coin_balance: number;
           created_at: string;
           updated_at: string;

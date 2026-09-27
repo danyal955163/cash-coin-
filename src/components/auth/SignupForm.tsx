@@ -1,17 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 
-import { createClient } from "@/lib/supabase/client";
-import { signUp } from "@/lib/auth";
+import { applyReferral, signUp } from "@/lib/auth";
 
-export default function SignupForm() {
+export default function SignupForm({ initialReferralCode = "" }: { initialReferralCode?: string }) {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [referralCode, setReferralCode] = useState("");
+  const [referralCode, setReferralCode] = useState(initialReferralCode);
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -37,14 +38,17 @@ export default function SignupForm() {
       }
 
       if (referralCode.trim() && data.user) {
-        const supabase = createClient();
-        const { error: profileError } = await supabase.from("profiles").upsert(
-          { id: data.user.id, referred_by: referralCode.trim() },
-          { onConflict: "id" },
-        );
-        if (profileError) {
-          toast.error("Account created, but the referral code could not be saved.");
+        const referralResult = await applyReferral(data.user.id, referralCode);
+        if (referralResult.error) {
+          toast.error("Account created, but the referral reward could not be applied.");
         }
+      }
+
+      if (data.session) {
+        toast.success("Account created successfully!");
+        router.push("/dashboard");
+        router.refresh();
+        return;
       }
 
       setSuccess(true);
