@@ -141,6 +141,21 @@ export interface Database {
         Update: Update<Database["public"]["Tables"]["withdrawals"]["Row"]>;
         Relationships: [];
       };
+      support_tickets: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          user_email: string | null;
+          subject: string;
+          message: string;
+          screenshot_url: string | null;
+          status: string;
+          created_at: string;
+        };
+        Insert: Insert<Database["public"]["Tables"]["support_tickets"]["Row"]>;
+        Update: Update<Database["public"]["Tables"]["support_tickets"]["Row"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -149,6 +164,7 @@ export interface Database {
       reject_deposit: { Args: { p_deposit_id: string }; Returns: { id: string; status: string } };
       approve_withdrawal: { Args: { p_withdrawal_id: string }; Returns: { amount: number } };
       reject_withdrawal: { Args: { p_withdrawal_id: string }; Returns: { id: string; status: string } };
+      approve_user_tasks: { Args: { p_task_ids: string[] }; Returns: Json };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;

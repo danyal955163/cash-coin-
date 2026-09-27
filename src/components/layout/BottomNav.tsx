@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CheckCircle2, Home, Settings, UserRound, UsersRound, WalletCards } from "lucide-react";
+import { CheckCircle2, CircleHelp, Home, Settings, UserRound, UsersRound, WalletCards } from "lucide-react";
 
 const items = [
   { label: "Dashboard", href: "/dashboard", color: "text-emerald-500", icon: Home },
@@ -10,6 +10,7 @@ const items = [
   { label: "Wallet", href: "/wallet", color: "text-amber-500", icon: WalletCards },
   { label: "Profile", href: "/profile", color: "text-purple-500", icon: UserRound },
   { label: "Team", href: "/referral", color: "text-fuchsia-500", icon: UsersRound },
+  { label: "Help", href: "/help", color: "text-cyan-500", icon: CircleHelp },
 ];
 
 export default function BottomNav({ isAdmin }: { isAdmin: boolean }) {

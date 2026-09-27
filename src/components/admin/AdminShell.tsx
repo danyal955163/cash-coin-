@@ -9,10 +9,12 @@ const links = [
   ["Dashboard", "/admin"],
   ["Deposits", "/admin/deposits"],
   ["Tasks", "/admin/tasks"],
+  ["Task History", "/admin/task-history"],
   ["Withdrawals", "/admin/withdrawals"],
   ["Users", "/admin/users"],
   ["Packages Settings", "/admin/packages-settings"],
   ["Site Settings", "/admin/settings"],
+  ["Support Tickets", "/admin/support"],
 ] as const;
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
