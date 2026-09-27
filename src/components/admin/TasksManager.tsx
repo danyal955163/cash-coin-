@@ -37,11 +37,11 @@ export default function TasksManager() {
         if (uploadError) throw uploadError;
         imageUrl = supabase.storage.from("task-images").getPublicUrl(path).data.publicUrl;
       }
-      const payload = { title: form.title.trim(), description: form.description.trim() || null, task_link: form.task_link.trim() || null, image_url: imageUrl, coins_reward: coins, reward: coins, category: "general", status: form.status, is_active: form.status === "active" };
-      const result = editing ? await supabase.from("tasks").update(payload).eq("id", editing.id) : await supabase.from("tasks").insert({ ...payload, created_by: (await supabase.auth.getUser()).data.user?.id ?? null });
+      const payload = { title: form.title.trim(), description: form.description.trim() || null, task_link: form.task_link.trim() || null, image_url: imageUrl, coins_reward: coins, category: "general", status: form.status, created_by: (await supabase.auth.getUser()).data.user?.id ?? null };
+      const result = editing ? await supabase.from("tasks").update(payload).eq("id", editing.id) : await supabase.from("tasks").insert(payload);
       if (result.error) throw result.error;
       toast.success(editing ? "Task updated." : "Task created."); reset(); await loadTasks();
-    } catch (error) { toast.error(error instanceof Error ? error.message : "Unable to save task."); } finally { setLoading(false); }
+    } catch (error) { console.error("Unable to save task:", error); toast.error(error instanceof Error ? error.message : "Unable to save task."); } finally { setLoading(false); }
   }
 
   async function deleteTask(id: string) { if (!window.confirm("Delete this task?")) return; const { error } = await createClient().from("tasks").delete().eq("id", id); if (error) toast.error(error.message); else { toast.success("Task deleted."); await loadTasks(); } }

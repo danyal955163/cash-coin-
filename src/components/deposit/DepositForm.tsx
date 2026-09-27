@@ -58,7 +58,6 @@ export default function DepositForm({ amount, packageName }: { amount: number; p
         amount,
         amount_pkr: amount,
         transaction_id: transactionId.trim(),
-        transaction_reference: transactionId.trim(),
         proof_image: publicUrl,
         proof_image_url: publicUrl,
         screenshot_url: publicUrl,
