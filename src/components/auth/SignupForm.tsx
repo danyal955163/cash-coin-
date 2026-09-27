@@ -44,12 +44,17 @@ export default function SignupForm({ initialReferralCode = "" }: { initialReferr
           p_referral_code: referralCode.trim(),
         });
         if (referralError) {
+          console.error("Referral error:", referralError);
           const message = referralError.message.toLowerCase();
-          toast(message.includes("not_found") || message.includes("code") ? "Invalid referral code, skipped." : "Referral skipped; your account was created.");
-        } else if (referralResult) {
+          toast.error(message.includes("not_found") || message.includes("code") ? "Invalid referral code, skipped." : "Referral skipped; your account was created.");
+        } else if (typeof referralResult === "object" && referralResult !== null && "success" in referralResult && referralResult.success) {
+          toast.success("Referral applied! Welcome bonus credited.");
+        } else if (typeof referralResult === "object" && referralResult !== null && "reason" in referralResult && referralResult.reason === "referrer_not_found") {
+          toast.error("Invalid referral code, skipped.");
+        } else if (referralResult === true) {
           toast.success("Referral applied! Welcome bonus credited.");
         } else {
-          toast("Invalid referral code, skipped.");
+          toast.error("Invalid referral code, skipped.");
         }
       }
 

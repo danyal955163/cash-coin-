@@ -144,7 +144,7 @@ export interface Database {
     };
     Views: Record<string, never>;
     Functions: {
-      process_referral: { Args: { p_user_id: string; p_referral_code: string }; Returns: boolean };
+      process_referral: { Args: { p_user_id: string; p_referral_code: string }; Returns: boolean | { success?: boolean; reason?: string } };
       approve_deposit: { Args: { p_deposit_id: string }; Returns: { amount: number } };
       reject_deposit: { Args: { p_deposit_id: string }; Returns: { id: string; status: string } };
       approve_withdrawal: { Args: { p_withdrawal_id: string }; Returns: { amount: number } };
