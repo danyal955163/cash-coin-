@@ -32,9 +32,19 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
+          user_email: string | null;
           amount: number;
+          amount_sent: number | null;
+          amount_pkr: number | null;
+          transaction_id: string | null;
           status: string;
           transaction_reference: string | null;
+          proof_image: string | null;
+          proof_image_url: string | null;
+          screenshot_url: string | null;
+          image_url: string | null;
+          proof_url: string | null;
+          package_name: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -75,6 +85,10 @@ export interface Database {
           id: string;
           name: string;
           price: number;
+          daily_tasks: number;
+          per_task_coins: number;
+          duration: string;
+          description: string | null;
           coin_reward: number;
           is_active: boolean;
           created_at: string;
