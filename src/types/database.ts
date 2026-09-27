@@ -13,6 +13,7 @@ export interface Database {
           full_name: string | null;
           username: string | null;
           avatar_url: string | null;
+          referred_by: string | null;
           coin_balance: number;
           created_at: string;
           updated_at: string;

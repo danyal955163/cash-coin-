@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 
 import "./globals.css";
 
@@ -19,6 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} bg-gray-50 font-sans text-gray-900`}>
         {children}
+        <Toaster position="top-right" />
       </body>
     </html>
   );
