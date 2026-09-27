@@ -32,7 +32,7 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-200">
+    <div className="animate-fade-in-up rounded-3xl bg-white p-8 shadow-xl shadow-emerald-100 ring-1 ring-slate-100">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
         <p className="mt-2 text-sm text-gray-600">Log in to continue earning with CashCoin.</p>
@@ -40,19 +40,19 @@ export default function LoginForm() {
       <form className="space-y-5" onSubmit={handleSubmit}>
         <label className="block text-sm font-medium text-gray-700">
           Email
-          <input className="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required autoComplete="email" />
+          <input className="mt-2 block w-full rounded-lg border border-slate-200 px-3 py-2.5 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required autoComplete="email" />
         </label>
         <label className="block text-sm font-medium text-gray-700">
           Password
-          <input className="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required autoComplete="current-password" />
+          <input className="mt-2 block w-full rounded-lg border border-slate-200 px-3 py-2.5 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required autoComplete="current-password" />
         </label>
         <div className="text-right">
           <Link href="/forgot-password" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700">
             Forgot Password?
           </Link>
         </div>
-        <button className="w-full rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60" type="submit" disabled={isLoading}>
-          {isLoading ? "Logging in..." : "Login"}
+        <button className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-200 transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60" type="submit" disabled={isLoading}>
+          {isLoading ? "⏳ Logging in..." : "Login"}
         </button>
       </form>
       <p className="mt-6 text-center text-sm text-gray-600">

@@ -1,60 +1,15 @@
 import Link from "next/link";
+import { ArrowUpRight, CheckCircle2, Coins, Gem, Package, UserRound, WalletCards } from "lucide-react";
 import { redirect } from "next/navigation";
 
 import ReferralLink from "@/components/dashboard/ReferralLink";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) redirect("/login");
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("username, deposit_wallet, withdrawal_wallet, coins, package_name, package_expires_at, referral_code")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  const expiryDate = profile?.package_expires_at
-    ? new Intl.DateTimeFormat("en-PK", { dateStyle: "medium" }).format(new Date(profile.package_expires_at))
-    : null;
-  const username = profile?.username ?? "";
-  const cards = [
-    { title: "Deposit Wallet", value: `${profile?.deposit_wallet ?? 0} PKR`, description: "Available deposit balance." },
-    { title: "Withdrawal Wallet", value: `${profile?.withdrawal_wallet ?? 0} PKR`, description: "Available withdrawal balance." },
-    { title: "Coins", value: String(profile?.coins ?? 0), description: "Your earned coins." },
-    { title: "Package", value: profile?.package_name ?? "No package", description: expiryDate ? `Expires: ${expiryDate}` : "No expiry date set." },
-  ];
-
-  return (
-    <section>
-      <div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-600">Dashboard</p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight text-gray-900">Welcome, {user.email ?? "CashCoin member"}</h1>
-          <p className="mt-2 text-gray-600">Your username: {username || "Not set yet"}</p>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <Link href="/packages" className="rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700">Buy Package</Link>
-          <Link href="/deposit" className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-emerald-600 hover:text-emerald-600">Deposit</Link>
-          <Link href="/tasks" className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-emerald-600 hover:text-emerald-600">View Tasks</Link>
-          <Link href="/wallet" className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-emerald-600 hover:text-emerald-600">View Wallet</Link>
-          <Link href="/withdrawal" className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-emerald-600 hover:text-emerald-600">Withdraw</Link>
-        </div>
-      </div>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {cards.map((card) => (
-          <article key={card.title} className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
-            <h2 className="text-sm font-semibold text-gray-600">{card.title}</h2>
-            <p className="mt-4 text-2xl font-bold text-gray-900">{card.value}</p>
-            <p className="mt-2 text-sm text-gray-500">{card.description}</p>
-          </article>
-        ))}
-      </div>
-      <ReferralLink username={username} />
-    </section>
-  );
+  const supabase = createClient(); const { data: { user } } = await supabase.auth.getUser(); if (!user) redirect("/login");
+  const { data: profile } = await supabase.from("profiles").select("username, deposit_wallet, withdrawal_wallet, coins, package_name, package_expires_at, referral_code").eq("id", user.id).maybeSingle();
+  const expiryDate = profile?.package_expires_at ? new Intl.DateTimeFormat("en-PK", { dateStyle: "medium" }).format(new Date(profile.package_expires_at)) : null; const username = profile?.username ?? "";
+  const cards = [{ title: "Deposit Wallet", value: `${profile?.deposit_wallet ?? 0} PKR`, sub: "Available balance", icon: WalletCards, style: "from-emerald-400 to-teal-600" }, { title: "Withdrawal Wallet", value: `${profile?.withdrawal_wallet ?? 0} PKR`, sub: "Ready to withdraw", icon: ArrowUpRight, style: "from-amber-400 to-orange-500" }, { title: "Coins", value: String(profile?.coins ?? 0), sub: "= coins balance", icon: Coins, style: "from-purple-500 to-fuchsia-600" }, { title: "Package", value: profile?.package_name ?? "Free", sub: expiryDate ? `Expires ${expiryDate}` : "Upgrade to earn more", icon: Package, style: "from-blue-500 to-indigo-600" }];
+  const actions = [{ label: "Deposit", href: "/deposit", icon: WalletCards, style: "bg-emerald-500 hover:bg-emerald-600" }, { label: "Withdraw", href: "/withdrawal", icon: ArrowUpRight, style: "bg-amber-500 hover:bg-amber-600" }, { label: "Buy Package", href: "/packages", icon: Package, style: "bg-blue-500 hover:bg-blue-600" }, { label: "View Tasks", href: "/tasks", icon: CheckCircle2, style: "bg-purple-500 hover:bg-purple-600" }, { label: "Wallet", href: "/wallet", icon: Gem, style: "bg-pink-500 hover:bg-pink-600" }, { label: "Profile", href: "/profile", icon: UserRound, style: "bg-indigo-500 hover:bg-indigo-600" }];
+  return <section className="space-y-8"><div className="animate-float relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 p-6 text-white shadow-xl shadow-emerald-200 sm:p-8"><div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/10" /><p className="relative text-sm font-semibold text-emerald-50">Welcome back,</p><h1 className="relative mt-2 break-all text-2xl font-black sm:text-3xl">{user.email ?? "CashCoin member"}</h1><span className="relative mt-4 inline-flex rounded-full bg-white px-4 py-1.5 text-sm font-bold text-emerald-700">{username || "CashCoin member"}</span></div><div className="grid grid-cols-2 gap-4 lg:grid-cols-4">{cards.map(({ title, value, sub, icon: Icon, style }, index) => <article key={title} style={{ animationDelay: `${index * 100}ms` }} className={`animate-fade-in-up overflow-hidden rounded-2xl bg-gradient-to-br p-5 text-white shadow-lg ${style}`}><Icon size={22} className="mb-6 opacity-80" /><p className="text-xs font-semibold uppercase tracking-wide text-white/75">{title}</p><p className="mt-2 break-words text-xl font-black sm:text-2xl">{value}</p><p className="mt-1 text-xs text-white/75">{sub}</p></article>)}</div><div><div className="mb-4 flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-emerald-500" /><h2 className="text-lg font-black text-slate-900">Quick Actions</h2></div><div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{actions.map(({ label, href, icon: Icon, style }) => <Link key={label} href={href} className={`flex items-center gap-3 rounded-2xl px-4 py-4 text-sm font-bold text-white shadow-sm transition hover:scale-105 ${style}`}><Icon size={20} /><span>{label}</span></Link>)}</div></div><ReferralLink username={username} /></section>;
 }
