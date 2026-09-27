@@ -57,6 +57,12 @@ export interface Database {
           id: string;
           title: string;
           description: string | null;
+          task_link: string | null;
+          image_url: string | null;
+          coins_reward: number;
+          category: string | null;
+          status: string;
+          created_by: string | null;
           reward: number;
           is_active: boolean;
           created_at: string;
@@ -87,6 +93,7 @@ export interface Database {
           price: number;
           daily_tasks: number;
           per_task_coins: number;
+          duration_days: number;
           duration: string;
           description: string | null;
           coin_reward: number;
@@ -114,10 +121,13 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
+          user_email: string | null;
           amount: number;
+          coins_used: number | null;
           status: string;
           payment_method: string | null;
           payment_details: Json | null;
+          jazzcash_number: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -127,7 +137,12 @@ export interface Database {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      approve_deposit: { Args: { p_deposit_id: string }; Returns: { amount: number } };
+      reject_deposit: { Args: { p_deposit_id: string }; Returns: { id: string; status: string } };
+      approve_withdrawal: { Args: { p_withdrawal_id: string }; Returns: { amount: number } };
+      reject_withdrawal: { Args: { p_withdrawal_id: string }; Returns: { id: string; status: string } };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };

@@ -5,7 +5,8 @@ import toast from "react-hot-toast";
 
 export default function ReferralLink({ username }: { username: string }) {
   const [copied, setCopied] = useState(false);
-  const referralLink = `https://cash-coin-nine.vercel.app/signup?ref=${encodeURIComponent(username)}`;
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
+  const referralLink = `${baseUrl}/signup?ref=${encodeURIComponent(username)}`;
 
   async function copyReferralLink() {
     try {

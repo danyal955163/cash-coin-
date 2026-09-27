@@ -1,0 +1,19 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+
+import { createClient } from "@/lib/supabase/client";
+import type { Database } from "@/types/database";
+
+type Package = Database["public"]["Tables"]["packages_settings"]["Row"];
+type Draft = Pick<Package, "price" | "daily_tasks" | "per_task_coins" | "duration_days" | "description">;
+
+export default function PackagesSettingsManager() {
+  const [packages, setPackages] = useState<Package[]>([]); const [drafts, setDrafts] = useState<Record<string, Draft>>({}); const [loading, setLoading] = useState<string | null>(null);
+  async function load() { const { data, error } = await createClient().from("packages_settings").select("*").order("price", { ascending: true }); if (error) toast.error(error.message); else { setPackages(data ?? []); setDrafts(Object.fromEntries((data ?? []).map((item) => [item.id, { price: item.price, daily_tasks: item.daily_tasks, per_task_coins: item.per_task_coins, duration_days: item.duration_days, description: item.description }]))); } }
+  useEffect(() => { void load(); }, []);
+  function update(id: string, field: keyof Draft, value: string | number | null) { setDrafts((current) => ({ ...current, [id]: { ...current[id], [field]: field === "description" ? value : Number(value) } as Draft })); }
+  async function save(id: string) { setLoading(id); const draft = drafts[id]; const { error } = await createClient().from("packages_settings").update({ ...draft, duration: `${draft.duration_days} days` }).eq("id", id); if (error) toast.error(error.message); else toast.success("Package updated"); setLoading(null); }
+  return <div><div className="mb-8"><p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-600">Configuration</p><h1 className="mt-2 text-3xl font-bold text-gray-900">Packages Settings</h1></div><div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-gray-200"><table className="min-w-[900px] text-left text-sm"><thead className="border-b border-gray-200 text-gray-500"><tr>{["Package Name", "Price PKR", "Daily Tasks", "Per Task Coins", "Duration Days", "Description", "Save"].map((label) => <th key={label} className="px-4 py-3">{label}</th>)}</tr></thead><tbody className="divide-y divide-gray-100">{packages.map((item) => { const draft = drafts[item.id]; return <tr key={item.id}><td className="px-4 py-3 font-semibold">{item.name}</td><td className="px-4 py-3"><input type="number" value={draft?.price ?? item.price} onChange={(e) => update(item.id, "price", e.target.value)} className="w-28 rounded border border-gray-300 px-2 py-1.5" /></td><td className="px-4 py-3"><input type="number" value={draft?.daily_tasks ?? item.daily_tasks} onChange={(e) => update(item.id, "daily_tasks", e.target.value)} className="w-24 rounded border border-gray-300 px-2 py-1.5" /></td><td className="px-4 py-3"><input type="number" value={draft?.per_task_coins ?? item.per_task_coins} onChange={(e) => update(item.id, "per_task_coins", e.target.value)} className="w-24 rounded border border-gray-300 px-2 py-1.5" /></td><td className="px-4 py-3"><input type="number" value={draft?.duration_days ?? item.duration_days} onChange={(e) => update(item.id, "duration_days", e.target.value)} className="w-24 rounded border border-gray-300 px-2 py-1.5" /></td><td className="px-4 py-3"><input value={draft?.description ?? item.description ?? ""} onChange={(e) => update(item.id, "description", e.target.value)} className="w-56 rounded border border-gray-300 px-2 py-1.5" /></td><td className="px-4 py-3"><button disabled={loading === item.id} onClick={() => void save(item.id)} className="rounded bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">Save</button></td></tr>; })}</tbody></table>{!packages.length && <p className="p-8 text-center text-sm text-gray-500">No package settings found.</p>}</div></div>;
+}
