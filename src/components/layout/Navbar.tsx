@@ -8,6 +8,7 @@ const links = [
   ["Packages", "/packages"],
   ["Tasks", "/tasks"],
   ["Wallet", "/wallet"],
+  ["Withdrawal", "/withdrawal"],
   ["Profile", "/profile"],
 ] as const;
 

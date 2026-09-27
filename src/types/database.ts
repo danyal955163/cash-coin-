@@ -20,6 +20,8 @@ export interface Database {
           package_name: string | null;
           package_expires_at: string | null;
           referral_code: string | null;
+          total_deposits: number;
+          total_earnings: number;
           coin_balance: number;
           created_at: string;
           updated_at: string;
@@ -77,6 +79,8 @@ export interface Database {
           id: string;
           user_id: string;
           task_id: string;
+          proof_image_url: string | null;
+          coins_earned: number;
           status: string;
           completed_at: string | null;
           created_at: string;
@@ -123,6 +127,7 @@ export interface Database {
           user_id: string;
           user_email: string | null;
           amount: number;
+          amount_pkr: number | null;
           coins_used: number | null;
           status: string;
           payment_method: string | null;
