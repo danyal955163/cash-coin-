@@ -1,5 +1,9 @@
-import Link from "next/link";
-import { CircleHelp } from "lucide-react";
-import SignOutButton from "@/components/auth/SignOutButton";
 import { createClient } from "@/lib/supabase/server";
-export default async function Navbar() { const { data: { user } } = await createClient().auth.getUser(); return <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur"><div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-5"><Link href="/dashboard" className="min-w-0 text-xl font-black tracking-tight text-emerald-500">Cash<span className="text-slate-900">Coin</span></Link><div className="flex min-w-0 items-center gap-2 sm:gap-3"><Link href="/help" aria-label="Help & Support" className="grid h-10 w-10 shrink-0 place-items-center rounded-lg text-gray-600 transition hover:text-emerald-600"><CircleHelp size={21} /></Link><span className="hidden max-w-44 truncate text-xs font-medium text-slate-500 sm:block">{user?.email ?? ""}</span><SignOutButton /></div></div></header>; }
+import NavbarClient from "@/components/layout/NavbarClient";
+
+export default async function Navbar() {
+  const { data: { user } } = await createClient().auth.getUser();
+  const email = user?.email ?? "";
+  const isAdmin = email.toLowerCase() === "muhammaddanyal4949@gmail.com";
+  return <NavbarClient email={email} isAdmin={isAdmin} />;
+}
