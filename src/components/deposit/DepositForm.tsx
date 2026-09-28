@@ -45,7 +45,8 @@ export default function DepositForm({ amount, packageName }: { amount: number; p
         .from("payment-proofs")
         .upload(filePath, screenshot, { cacheControl: "3600", upsert: false, contentType: screenshot.type });
       if (uploadError) {
-        toast.error(`Upload failed: ${uploadError.message}`);
+        console.error("Deposit upload error:", uploadError);
+        toast.error(`Upload failed: ${uploadError.message} (${uploadError.name ?? "no-code"})`);
         return;
       }
 
@@ -67,14 +68,17 @@ export default function DepositForm({ amount, packageName }: { amount: number; p
         status: "pending",
       });
       if (insertError) {
-        toast.error(`Deposit submission failed: ${insertError.message}`);
+        console.error("Deposit submission error:", insertError);
+        toast.error(`Error: ${insertError.message} (${insertError.code ?? "no-code"})`);
         return;
       }
 
       toast.success("Deposit submitted! Admin will review soon.");
       window.setTimeout(() => router.push("/dashboard"), 2000);
-    } catch {
-      toast.error("Network error. Please check your connection and try again.");
+    } catch (error) {
+      console.error("Deposit error:", error);
+      const details = error && typeof error === "object" ? error as { message?: string; code?: string } : { message: String(error) };
+      toast.error(`Error: ${details.message ?? "Unknown error"} (${details.code ?? "no-code"})`);
     } finally {
       setIsSubmitting(false);
     }

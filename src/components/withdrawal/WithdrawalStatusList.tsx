@@ -1,0 +1,8 @@
+import type { Database } from "@/types/database";
+
+type Withdrawal = Database["public"]["Tables"]["withdrawals"]["Row"];
+function statusStyle(status: string) { return status === "approved" ? "bg-emerald-100 text-emerald-700" : status === "rejected" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"; }
+function statusLabel(status: string) { return status === "approved" ? "✅ Approved & Paid" : status === "rejected" ? "❌ Rejected (Refunded)" : "⏳ Pending Approval"; }
+export default function WithdrawalStatusList({ withdrawals, title = "Withdrawals" }: { withdrawals: Withdrawal[]; title?: string }) {
+  return <section className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-6"><h2 className="text-lg font-black text-slate-900">{title}</h2><div className="mt-4 space-y-3">{withdrawals.map((row) => <article key={row.id} className="rounded-xl border border-slate-100 p-4"><div className="flex flex-col justify-between gap-2 sm:flex-row"><div><p className="font-bold text-slate-800">{row.amount_pkr ?? row.amount} PKR · {row.coins_used ?? 0} coins</p><p className="mt-1 text-sm text-slate-500">JazzCash: {row.jazzcash_number ?? "—"} · Name: {row.account_name ?? "—"}</p><p className="mt-1 text-xs text-slate-400">{new Date(row.created_at).toLocaleString("en-PK")}</p></div><span className={`h-fit rounded-full px-3 py-1 text-xs font-bold ${statusStyle(row.status)}`}>{statusLabel(row.status)}</span></div>{row.status === "rejected" && <p className="mt-2 text-xs font-semibold text-red-600">Coins refunded to your wallet.</p>}</article>)}{!withdrawals.length && <p className="text-sm text-slate-500">No withdrawals yet.</p>}</div></section>;
+}

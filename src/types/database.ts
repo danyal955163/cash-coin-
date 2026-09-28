@@ -200,6 +200,7 @@ export interface Database {
       reject_deposit: { Args: { p_deposit_id: string }; Returns: { id: string; status: string } };
       approve_withdrawal: { Args: { p_withdrawal_id: string }; Returns: { amount: number } };
       reject_withdrawal: { Args: { p_withdrawal_id: string }; Returns: { id: string; status: string } };
+      request_withdrawal: { Args: { p_amount_pkr: number; p_coins_used: number; p_jazzcash_number: string; p_account_name: string }; Returns: Json };
       approve_user_tasks: { Args: { p_task_ids: string[] }; Returns: Json };
       complete_ad_task: { Args: { p_task_id: string }; Returns: Json };
       claim_ad_task: { Args: { p_task_id: string }; Returns: Json };

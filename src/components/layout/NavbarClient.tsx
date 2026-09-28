@@ -10,6 +10,7 @@ const pages = [
   ["Tasks", "/tasks"],
   ["Wallet", "/wallet"],
   ["Withdrawal", "/withdrawal"],
+  ["Withdrawal History", "/withdrawal-history"],
   ["Packages", "/packages"],
   ["Deposit", "/deposit"],
   ["Team", "/referral"],
