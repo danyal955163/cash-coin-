@@ -1,37 +1,18 @@
 import DepositForm from "@/components/deposit/DepositForm";
+import PaymentMethodCard from "@/components/deposit/PaymentMethodCard";
 import { createClient } from "@/lib/supabase/server";
-import type { Json } from "@/types/database";
-
-function settingText(value: Json | undefined) {
-  if (value === undefined || value === null) return "Not configured";
-  if (typeof value === "string" || typeof value === "number") return String(value);
-  return JSON.stringify(value);
-}
 
 export default async function DepositPage({ searchParams }: { searchParams: { package?: string } }) {
   const packageName = searchParams.package ?? "";
   const amountMatch = packageName.match(/(\d+(?:\.\d+)?)/);
   const amount = Number(amountMatch?.[1] ?? 0);
-  const supabase = createClient();
-  const { data: settings } = await supabase
-    .from("site_settings")
-    .select("key, value")
-    .in("key", ["jazzcash_number", "easypaisa_number", "bank_account"]);
-  const settingMap = Object.fromEntries((settings ?? []).map((setting) => [setting.key, setting.value]));
+  const { data: settings, error } = await createClient().from("site_settings").select("jazzcash_number, jazzcash_name, easypaisa_number, easypaisa_name, bank_name, bank_account_number, bank_account_name").limit(1).maybeSingle();
+  if (error) console.error("Unable to load site payment settings:", error);
 
-  return (
-    <section className="mx-auto max-w-3xl">
-      <div className="mb-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-600">Deposit</p>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight text-gray-900">Complete your package payment</h1>
-        <p className="mt-3 text-gray-600">Send {amount || "the selected amount"} PKR to one of these accounts.</p>
-      </div>
-      <div className="mb-8 grid gap-4 sm:grid-cols-3">
-        <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200"><p className="text-sm font-semibold text-gray-500">JazzCash</p><p className="mt-2 break-words font-bold text-gray-900">{settingText(settingMap.jazzcash_number)}</p></div>
-        <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200"><p className="text-sm font-semibold text-gray-500">EasyPaisa</p><p className="mt-2 break-words font-bold text-gray-900">{settingText(settingMap.easypaisa_number)}</p></div>
-        <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200"><p className="text-sm font-semibold text-gray-500">Bank Account</p><p className="mt-2 break-words font-bold text-gray-900">{settingText(settingMap.bank_account)}</p></div>
-      </div>
-      <DepositForm amount={amount} packageName={packageName} />
-    </section>
-  );
+  const methodsConfigured = !!(settings?.jazzcash_number?.trim() || settings?.easypaisa_number?.trim() || settings?.bank_account_number?.trim());
+  return <section className="mx-auto max-w-4xl">
+    <div className="mb-8"><p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-600">Deposit</p><h1 className="mt-3 text-3xl font-bold tracking-tight text-gray-900">Complete your package payment</h1><p className="mt-3 text-gray-600">Send {amount || "the selected amount"} PKR to one of the configured accounts below.</p></div>
+    {methodsConfigured ? <div className="mb-8 grid gap-4 md:grid-cols-3"><PaymentMethodCard title="JazzCash" number={settings?.jazzcash_number} name={settings?.jazzcash_name} amount={amount} tone="jazz" /><PaymentMethodCard title="EasyPaisa" number={settings?.easypaisa_number} name={settings?.easypaisa_name} amount={amount} tone="easy" /><PaymentMethodCard title="Bank" number={settings?.bank_account_number} name={settings?.bank_account_name} bankName={settings?.bank_name} label="Account / IBAN" amount={amount} tone="bank" /></div> : <div className="mb-8 rounded-2xl bg-amber-50 p-5 text-center text-sm font-semibold text-amber-800 ring-1 ring-amber-200">Payment methods are being set up. Please try again later.</div>}
+    <DepositForm amount={amount} packageName={packageName} />
+  </section>;
 }

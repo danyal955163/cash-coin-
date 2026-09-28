@@ -119,8 +119,18 @@ export interface Database {
       site_settings: {
         Row: {
           id: string;
-          key: string;
-          value: Json;
+          coin_rate: number | null;
+          usd_rate: number | null;
+          referral_reward_coins: number | null;
+          ad_reward_coins: number | null;
+          min_withdrawal_pkr: number | null;
+          jazzcash_number: string | null;
+          jazzcash_name: string | null;
+          easypaisa_number: string | null;
+          easypaisa_name: string | null;
+          bank_name: string | null;
+          bank_account_number: string | null;
+          bank_account_name: string | null;
           created_at: string;
           updated_at: string;
         };
