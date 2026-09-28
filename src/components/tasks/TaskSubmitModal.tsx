@@ -4,7 +4,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { createClient } from "@/lib/supabase/client";
 
-type Task = { id: string; title: string; coins_reward: number; description: string | null; task_type?: "one_time" | "repeated" | "ad" };
+type Task = { id: string; title: string; coins_reward: number; description: string | null; task_type?: "one_time" | "repeated" | "ad" | "timewall" };
 export default function TaskSubmitModal({ task, userId, onClose, onSubmitted }: { task: Task; userId: string; onClose: () => void; onSubmitted: () => void }) {
   const [file, setFile] = useState<File | null>(null); const [loading, setLoading] = useState(false);
   async function submit() {

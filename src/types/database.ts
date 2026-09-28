@@ -65,9 +65,10 @@ export interface Database {
           category: string | null;
           status: string;
           created_by: string | null;
-          task_type: "one_time" | "repeated" | "ad";
+          task_type: "one_time" | "repeated" | "ad" | "timewall";
           ad_duration_seconds: number | null;
           cooldown_minutes: number;
+          timewall_placement_id: string | null;
           reward: number;
           is_active: boolean;
           created_at: string;
@@ -159,6 +160,24 @@ export interface Database {
         Update: Update<Database["public"]["Tables"]["support_tickets"]["Row"]>;
         Relationships: [];
       };
+      timewall_transactions: {
+        Row: {
+          id: string;
+          username: string;
+          tx_id: string;
+          revenue: number;
+          currency_amount: number;
+          offer_name: string | null;
+          coins_credited: number;
+          status: string;
+          ip_address: string | null;
+          raw_data: Json | null;
+          created_at: string;
+        };
+        Insert: Insert<Database["public"]["Tables"]["timewall_transactions"]["Row"]>;
+        Update: Update<Database["public"]["Tables"]["timewall_transactions"]["Row"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -169,6 +188,7 @@ export interface Database {
       reject_withdrawal: { Args: { p_withdrawal_id: string }; Returns: { id: string; status: string } };
       approve_user_tasks: { Args: { p_task_ids: string[] }; Returns: Json };
       complete_ad_task: { Args: { p_task_id: string }; Returns: Json };
+      credit_timewall_coins: { Args: { p_username: string; p_revenue: number; p_coins: number; p_tx_id: string; p_offer_name: string; p_ip: string; p_raw: Json }; Returns: Json };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
