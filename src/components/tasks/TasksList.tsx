@@ -7,7 +7,7 @@ import TaskSubmitModal from "@/components/tasks/TaskSubmitModal";
 import AdTaskCard from "@/components/tasks/AdTaskCard";
 import TimeWallTaskCard from "@/components/tasks/TimeWallTaskCard";
 
-type Task = { id: string; title: string; description: string | null; image_url: string | null; task_link: string | null; ad_url: string | null; coins_reward: number; task_type: "one_time" | "repeated" | "ad" | "timewall"; ad_duration_seconds: number | null; ad_cooldown_seconds: number | null; ad_daily_limit: number; ad_completed_today: number; cooldown_minutes: number; last_submission_at: string | null; timewall_placement_id: string | null };
+type Task = { id: string; title: string; description: string | null; image_url: string | null; task_link: string | null; ad_url: string | null; coins_reward: number; task_type: "one_time" | "repeated" | "ad" | "timewall"; ad_duration_seconds: number | null; cooldown_seconds: number | null; ad_daily_limit: number; ad_completed_today: number; cooldown_minutes: number; last_submission_at: string | null; timewall_placement_id: string | null };
 
 function DailyResetCard({ resetHour }: { resetHour: number }) {
   const router = useRouter();

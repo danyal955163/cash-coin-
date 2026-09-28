@@ -69,7 +69,7 @@ export interface Database {
           ad_duration_seconds: number | null;
           ad_url: string | null;
           ad_daily_limit: number;
-          ad_cooldown_seconds: number;
+          cooldown_seconds: number;
           cooldown_minutes: number;
           timewall_placement_id: string | null;
           reward: number;

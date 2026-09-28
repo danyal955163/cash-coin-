@@ -7,9 +7,9 @@ import type { Database } from "@/types/database";
 
 type Task = Database["public"]["Tables"]["tasks"]["Row"];
 type TaskType = "one_time" | "repeated" | "ad" | "timewall";
-type FormState = { title: string; description: string; task_link: string; coins_reward: string; category: string; status: "active" | "inactive"; task_type: TaskType; ad_duration_seconds: string; ad_url: string; ad_daily_limit: string; ad_cooldown_seconds: string; cooldown_minutes: string; timewall_placement_id: string; image: File | null };
+type FormState = { title: string; description: string; task_link: string; coins_reward: string; category: string; status: "active" | "inactive"; task_type: TaskType; ad_duration_seconds: string; ad_url: string; ad_daily_limit: string; cooldown_seconds: string; cooldown_minutes: string; timewall_placement_id: string; image: File | null };
 
-const emptyForm: FormState = { title: "", description: "", task_link: "", coins_reward: "100", category: "general", status: "active", task_type: "one_time", ad_duration_seconds: "15", ad_url: "", ad_daily_limit: "20", ad_cooldown_seconds: "10", cooldown_minutes: "0", timewall_placement_id: "", image: null };
+const emptyForm: FormState = { title: "", description: "", task_link: "", coins_reward: "100", category: "general", status: "active", task_type: "one_time", ad_duration_seconds: "15", ad_url: "", ad_daily_limit: "20", cooldown_seconds: "10", cooldown_minutes: "0", timewall_placement_id: "", image: null };
 const typeLabel = (type: TaskType, duration?: number | null) => type === "ad" ? `Ad - ${duration ?? 15}s` : type === "repeated" ? "Repeated" : type === "timewall" ? "TimeWall" : "One-Time";
 
 function errorMessage(error: { message?: string; code?: string; details?: string; hint?: string }) {
@@ -30,7 +30,7 @@ export default function TasksManager() {
 
   function editTask(task: Task) {
     setEditing(task);
-    setForm({ title: task.title, description: task.description ?? "", task_link: task.task_link ?? "", coins_reward: String(task.coins_reward ?? task.reward ?? 100), category: task.category ?? "general", status: task.status === "inactive" ? "inactive" : "active", task_type: task.task_type ?? "one_time", ad_duration_seconds: String(task.ad_duration_seconds ?? 15), ad_url: task.ad_url ?? "", ad_daily_limit: String(task.ad_daily_limit ?? 20), ad_cooldown_seconds: String(task.ad_cooldown_seconds ?? 10), cooldown_minutes: String(task.cooldown_minutes ?? 0), timewall_placement_id: task.timewall_placement_id ?? "", image: null });
+    setForm({ title: task.title, description: task.description ?? "", task_link: task.task_link ?? "", coins_reward: String(task.coins_reward ?? task.reward ?? 100), category: task.category ?? "general", status: task.status === "inactive" ? "inactive" : "active", task_type: task.task_type ?? "one_time", ad_duration_seconds: String(task.ad_duration_seconds ?? 15), ad_url: task.ad_url ?? "", ad_daily_limit: String(task.ad_daily_limit ?? 20), cooldown_seconds: String(task.cooldown_seconds ?? 10), cooldown_minutes: String(task.cooldown_minutes ?? 0), timewall_placement_id: task.timewall_placement_id ?? "", image: null });
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
   function reset() { setEditing(null); setForm({ ...emptyForm }); }
@@ -41,7 +41,7 @@ export default function TasksManager() {
     const coins = Number.parseInt(String(form.coins_reward), 10);
     const adDuration = Number.parseInt(String(form.ad_duration_seconds), 10) || 15;
     const adDailyLimit = Number.parseInt(String(form.ad_daily_limit), 10) || 20;
-    const adCooldown = Number.parseInt(String(form.ad_cooldown_seconds), 10) || 10;
+    const adCooldown = Number.parseInt(String(form.cooldown_seconds), 10) || 10;
     const cooldownMinutes = Number.parseInt(String(form.cooldown_minutes), 10) || 0;
     if (!form.title.trim()) { toast.error("Title required"); return; }
     if (!Number.isInteger(coins) || coins < 1) { toast.error("Coins must be at least 1"); return; }
@@ -71,8 +71,7 @@ export default function TasksManager() {
         ad_url: form.task_type === "ad" ? (form.ad_url.trim() || process.env.NEXT_PUBLIC_ADSTERRA_SMARTLINK_URL || null) : null,
         ad_duration_seconds: form.task_type === "ad" ? adDuration : null,
         ad_daily_limit: form.task_type === "ad" ? adDailyLimit : 0,
-        // The actual repository/database column is ad_cooldown_seconds, not cooldown_seconds.
-        ad_cooldown_seconds: form.task_type === "ad" ? adCooldown : 10,
+        cooldown_seconds: form.task_type === "ad" ? adCooldown : 10,
         cooldown_minutes: form.task_type === "repeated" ? cooldownMinutes : 0,
         timewall_placement_id: form.task_type === "timewall" ? (form.timewall_placement_id.trim() || process.env.NEXT_PUBLIC_TIMEWALL_PLACEMENT_ID || null) : null,
       };
@@ -105,7 +104,7 @@ export default function TasksManager() {
     {form.task_type === "ad" && <label className="text-sm font-medium text-gray-700">Ad URL<input value={form.ad_url} onChange={(e) => update("ad_url", e.target.value)} placeholder="Optional Ad URL" type="url" className="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2.5" /></label>}
     {form.task_type === "ad" && <label className="text-sm font-medium text-gray-700">Ad Duration (seconds)<input required min={5} max={120} type="number" value={form.ad_duration_seconds} onChange={(e) => update("ad_duration_seconds", e.target.value)} className="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2.5" /></label>}
     {form.task_type === "ad" && <label className="text-sm font-medium text-gray-700">Ad Daily Limit<input required min={1} max={1000} type="number" value={form.ad_daily_limit} onChange={(e) => update("ad_daily_limit", e.target.value)} className="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2.5" /></label>}
-    {form.task_type === "ad" && <label className="text-sm font-medium text-gray-700">Cooldown (seconds)<input required min={5} max={300} type="number" value={form.ad_cooldown_seconds} onChange={(e) => update("ad_cooldown_seconds", e.target.value)} className="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2.5" /></label>}
+    {form.task_type === "ad" && <label className="text-sm font-medium text-gray-700">Cooldown (seconds)<input required min={5} max={300} type="number" value={form.cooldown_seconds} onChange={(e) => update("cooldown_seconds", e.target.value)} className="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2.5" /></label>}
     {form.task_type === "repeated" && <label className="text-sm font-medium text-gray-700">Cooldown (minutes)<input required min={0} type="number" value={form.cooldown_minutes} onChange={(e) => update("cooldown_minutes", e.target.value)} className="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2.5" /></label>}
     {form.task_type === "timewall" && <label className="text-sm font-medium text-gray-700">TimeWall Placement ID<input value={form.timewall_placement_id} onChange={(e) => update("timewall_placement_id", e.target.value)} placeholder="Optional placement" className="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2.5" /></label>}
     <label className="text-sm font-medium text-gray-700">Image Upload<input type="file" accept="image/*" onChange={(e) => update("image", e.target.files?.[0] ?? null)} className="mt-2 block w-full text-sm" /></label>

@@ -3,7 +3,8 @@
 alter table public.tasks
   add column if not exists ad_url text,
   add column if not exists ad_daily_limit integer not null default 20,
-  add column if not exists ad_cooldown_seconds integer not null default 10;
+  add column if not exists ad_duration_seconds integer not null default 15,
+  add column if not exists cooldown_seconds integer not null default 10;
 
 create or replace function public.claim_ad_task(p_task_id uuid)
 returns jsonb
@@ -34,7 +35,7 @@ begin
   end if;
 
   v_limit := greatest(coalesce(v_task.ad_daily_limit, 20), 1);
-  v_cooldown := greatest(coalesce(v_task.ad_cooldown_seconds, 10), 5);
+  v_cooldown := greatest(coalesce(v_task.cooldown_seconds, 10), 5);
   select completed_at into v_last_completed
   from public.user_tasks
   where user_id = v_user_id and task_id = p_task_id and status = 'approved'

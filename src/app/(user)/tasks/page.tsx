@@ -17,7 +17,7 @@ export default async function TasksPage() {
 
   const [{ data: siteSettings }, { data: allTasks }, { data: userSubmissions }, { count: todayCount }] = await Promise.all([
     supabase.from("site_settings").select("daily_reset_hour").limit(1).maybeSingle(),
-    supabase.from("tasks").select("id, title, description, image_url, task_link, ad_url, coins_reward, task_type, ad_duration_seconds, ad_cooldown_seconds, ad_daily_limit, cooldown_minutes, timewall_placement_id").eq("status", "active").order("created_at", { ascending: false }),
+    supabase.from("tasks").select("id, title, description, image_url, task_link, ad_url, coins_reward, task_type, ad_duration_seconds, cooldown_seconds, ad_daily_limit, cooldown_minutes, timewall_placement_id").eq("status", "active").order("created_at", { ascending: false }),
     // Critical: every user-facing task query is scoped to the authenticated user.
     supabase.from("user_tasks").select("task_id, status, completed_at, created_at").eq("user_id", user.id),
     supabase.from("user_tasks").select("*", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", new Date(new Date().setHours(0, 0, 0, 0)).toISOString()).in("status", ["pending", "approved"]),
@@ -34,7 +34,7 @@ export default async function TasksPage() {
   const availableTasks = (allTasks ?? []).filter((task) => task.task_type !== "one_time" || !completedIds.has(task.id)).map((task) => {
     const taskSubmissions = byTask.get(task.id) ?? [];
     const latest = taskSubmissions.slice().sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
-    return { ...task, task_type: task.task_type ?? "one_time", ad_duration_seconds: task.ad_duration_seconds ?? null, ad_cooldown_seconds: task.ad_cooldown_seconds ?? 10, ad_daily_limit: task.ad_daily_limit ?? 20, ad_completed_today: taskSubmissions.filter((submission) => submission.status === "approved" && new Date(submission.created_at) >= resetStart).length, cooldown_minutes: task.cooldown_minutes ?? 0, timewall_placement_id: task.timewall_placement_id ?? null, last_submission_at: latest?.created_at ?? null };
+    return { ...task, task_type: task.task_type ?? "one_time", ad_duration_seconds: task.ad_duration_seconds ?? null, cooldown_seconds: task.cooldown_seconds ?? 10, ad_daily_limit: task.ad_daily_limit ?? 20, ad_completed_today: taskSubmissions.filter((submission) => submission.status === "approved" && new Date(submission.created_at) >= resetStart).length, cooldown_minutes: task.cooldown_minutes ?? 0, timewall_placement_id: task.timewall_placement_id ?? null, last_submission_at: latest?.created_at ?? null };
   });
   const completedCount = (userSubmissions ?? []).filter((submission) => !timewallTaskIds.has(submission.task_id) && (submission.status === "pending" || submission.status === "approved") && new Date(submission.created_at) >= resetStart).length;
   const timewallPlacement = process.env.NEXT_PUBLIC_TIMEWALL_PLACEMENT_ID ?? "";

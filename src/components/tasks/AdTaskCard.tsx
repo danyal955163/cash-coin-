@@ -17,7 +17,7 @@ type AdTask = {
   ad_url: string | null;
   coins_reward: number;
   ad_duration_seconds: number | null;
-  ad_cooldown_seconds: number | null;
+  cooldown_seconds: number | null;
 };
 
 type ClaimResult = { coins_earned?: number; coins?: number; cooldown_seconds?: number };
@@ -25,7 +25,7 @@ type ClaimResult = { coins_earned?: number; coins?: number; cooldown_seconds?: n
 export default function AdTaskCard({ task, userId, disabled }: { task: AdTask; userId: string; disabled: boolean }) {
   const router = useRouter();
   const duration = Math.max(1, task.ad_duration_seconds ?? 15);
-  const defaultCooldown = Math.max(5, task.ad_cooldown_seconds ?? 10);
+  const defaultCooldown = Math.max(5, task.cooldown_seconds ?? 10);
   const adUrl = task.ad_url || process.env.NEXT_PUBLIC_ADSTERRA_SMARTLINK_URL || task.task_link;
   const [state, setState] = useState<AdState>(disabled ? "daily_limit_reached" : "idle");
   const [remaining, setRemaining] = useState(duration);
@@ -97,7 +97,8 @@ export default function AdTaskCard({ task, userId, disabled }: { task: AdTask; u
 
   const handleWatchAd = () => {
     if (state !== "idle" || disabled) return;
-    if (adUrl) window.open(adUrl, "_blank", "noopener,noreferrer");
+    if (!adUrl) { toast.error("Ad URL not configured"); return; }
+    window.open(adUrl, "_blank", "noopener,noreferrer");
     setRemaining(duration);
     setState("watching");
     clearWatchInterval();
