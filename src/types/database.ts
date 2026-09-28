@@ -124,6 +124,7 @@ export interface Database {
           referral_reward_coins: number | null;
           ad_reward_coins: number | null;
           min_withdrawal_pkr: number | null;
+          daily_reset_hour: number | null;
           jazzcash_number: string | null;
           jazzcash_name: string | null;
           easypaisa_number: string | null;
