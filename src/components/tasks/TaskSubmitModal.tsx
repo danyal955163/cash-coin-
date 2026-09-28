@@ -4,10 +4,11 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { createClient } from "@/lib/supabase/client";
 
-type Task = { id: string; title: string; coins_reward: number; description: string | null };
+type Task = { id: string; title: string; coins_reward: number; description: string | null; task_type?: "one_time" | "repeated" | "ad" };
 export default function TaskSubmitModal({ task, userId, onClose, onSubmitted }: { task: Task; userId: string; onClose: () => void; onSubmitted: () => void }) {
   const [file, setFile] = useState<File | null>(null); const [loading, setLoading] = useState(false);
   async function submit() {
+    if (task.task_type === "ad") return toast.error("Ad tasks complete automatically after the timer.");
     if (!file) return toast.error("Please select a proof image.");
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return toast.error("Only JPG, JPEG, PNG and WEBP images are allowed.");
     if (file.size > 5 * 1024 * 1024) return toast.error("File is too big. Maximum size is 5MB.");

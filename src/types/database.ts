@@ -65,6 +65,9 @@ export interface Database {
           category: string | null;
           status: string;
           created_by: string | null;
+          task_type: "one_time" | "repeated" | "ad";
+          ad_duration_seconds: number | null;
+          cooldown_minutes: number;
           reward: number;
           is_active: boolean;
           created_at: string;
@@ -165,6 +168,7 @@ export interface Database {
       approve_withdrawal: { Args: { p_withdrawal_id: string }; Returns: { amount: number } };
       reject_withdrawal: { Args: { p_withdrawal_id: string }; Returns: { id: string; status: string } };
       approve_user_tasks: { Args: { p_task_ids: string[] }; Returns: Json };
+      complete_ad_task: { Args: { p_task_id: string }; Returns: Json };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
