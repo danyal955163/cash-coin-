@@ -38,7 +38,10 @@ export default function WithdrawalForm({ coins, withdrawalWallet, usdRate, minim
       const { error } = await createClient().rpc("request_withdrawal", payload);
       if (error) throw error;
       toast.success("Withdrawal requested! Coins deducted from wallet.");
-      window.setTimeout(() => router.push("/wallet"), 1500);
+      setAmount(null);
+      setAccountName("");
+      setJazzcash("");
+      window.setTimeout(() => router.refresh(), 800);
     } catch (error) {
       console.error("Withdrawal error:", error);
       if (error && typeof error === "object") toast.error(displayError(error as SupabaseError));
