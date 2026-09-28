@@ -2,7 +2,8 @@
 
 alter table public.tasks
   add column if not exists ad_url text,
-  add column if not exists ad_daily_limit integer not null default 20;
+  add column if not exists ad_daily_limit integer not null default 20,
+  add column if not exists ad_cooldown_seconds integer not null default 10;
 
 create or replace function public.claim_ad_task(p_task_id uuid)
 returns jsonb
@@ -16,6 +17,8 @@ declare
   v_completed integer;
   v_limit integer;
   v_coins integer;
+  v_cooldown integer;
+  v_last_completed timestamptz;
 begin
   if v_user_id is null then
     raise exception 'You must be logged in.';
@@ -31,6 +34,16 @@ begin
   end if;
 
   v_limit := greatest(coalesce(v_task.ad_daily_limit, 20), 1);
+  v_cooldown := greatest(coalesce(v_task.ad_cooldown_seconds, 10), 5);
+  select completed_at into v_last_completed
+  from public.user_tasks
+  where user_id = v_user_id and task_id = p_task_id and status = 'approved'
+  order by completed_at desc nulls last
+  limit 1;
+  if v_last_completed is not null and v_last_completed + make_interval(secs => v_cooldown) > now() then
+    raise exception 'Please wait % seconds before claiming this ad again.',
+      ceil(extract(epoch from (v_last_completed + make_interval(secs => v_cooldown) - now())));
+  end if;
   select count(*) into v_completed
   from public.user_tasks
   where user_id = v_user_id
@@ -51,7 +64,7 @@ begin
       withdrawal_wallet = coalesce(withdrawal_wallet, 0) + (v_coins / 100.0)
   where id = v_user_id;
 
-  return jsonb_build_object('success', true, 'coins', v_coins);
+  return jsonb_build_object('success', true, 'coins', v_coins, 'coins_earned', v_coins, 'cooldown_seconds', v_cooldown);
 end;
 $$;
 
