@@ -67,6 +67,8 @@ export interface Database {
           created_by: string | null;
           task_type: "one_time" | "repeated" | "ad" | "timewall";
           ad_duration_seconds: number | null;
+          ad_url: string | null;
+          ad_daily_limit: number;
           cooldown_minutes: number;
           timewall_placement_id: string | null;
           reward: number;
@@ -188,6 +190,7 @@ export interface Database {
       reject_withdrawal: { Args: { p_withdrawal_id: string }; Returns: { id: string; status: string } };
       approve_user_tasks: { Args: { p_task_ids: string[] }; Returns: Json };
       complete_ad_task: { Args: { p_task_id: string }; Returns: Json };
+      claim_ad_task: { Args: { p_task_id: string }; Returns: Json };
       credit_timewall_coins: { Args: { p_username: string; p_revenue: number; p_coins: number; p_tx_id: string; p_offer_name: string; p_ip: string; p_raw: Json }; Returns: Json };
     };
     Enums: Record<string, never>;
