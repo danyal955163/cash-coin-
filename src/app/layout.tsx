@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
+import Footer from "@/components/layout/Footer";
 
 import "./globals.css";
 
@@ -27,6 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} bg-gray-50 font-sans text-gray-900`}>
         {children}
+        <Footer />
         <Toaster position="top-right" />
       </body>
     </html>
