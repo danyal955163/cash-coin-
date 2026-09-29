@@ -71,6 +71,8 @@ export interface Database {
           ad_daily_limit: number;
           cooldown_seconds: number;
           cooldown_minutes: number;
+          requires_game_id: boolean;
+          instructions: string | null;
           timewall_placement_id: string | null;
           reward: number;
           is_active: boolean;
@@ -92,6 +94,9 @@ export interface Database {
           completed_at: string | null;
           created_at: string;
           updated_at: string;
+          game_id: string | null;
+          account_name: string | null;
+          terms_accepted: boolean;
         };
         Insert: Insert<Database["public"]["Tables"]["user_tasks"]["Row"]>;
         Update: Update<Database["public"]["Tables"]["user_tasks"]["Row"]>;
