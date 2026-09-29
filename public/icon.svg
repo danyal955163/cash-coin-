@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="CashCoin">
+  <defs>
+    <linearGradient id="coinGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FCD34D"/><stop offset="50%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#D97706"/></linearGradient>
+    <linearGradient id="shineGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#FEF3C7" stop-opacity="0.9"/><stop offset="100%" stop-color="#FEF3C7" stop-opacity="0"/></linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="30" fill="url(#coinGrad)" stroke="#B45309" stroke-width="2"/>
+  <circle cx="32" cy="32" r="24" fill="none" stroke="#FEF3C7" stroke-width="1.5" stroke-opacity="0.65"/>
+  <ellipse cx="22" cy="18" rx="12" ry="8" fill="url(#shineGrad)"/>
+  <text x="32" y="40" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#7C2D12" text-anchor="middle">CC</text>
+</svg>
