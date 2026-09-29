@@ -47,6 +47,8 @@ export interface Database {
           image_url: string | null;
           proof_url: string | null;
           package_name: string | null;
+          sender_name: string | null;
+          sender_number: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -95,11 +97,25 @@ export interface Database {
           created_at: string;
           updated_at: string;
           game_id: string | null;
+          game_name: string | null;
           account_name: string | null;
           terms_accepted: boolean;
         };
         Insert: Insert<Database["public"]["Tables"]["user_tasks"]["Row"]>;
         Update: Update<Database["public"]["Tables"]["user_tasks"]["Row"]>;
+        Relationships: [];
+      };
+      support_messages: {
+        Row: {
+          id: string;
+          user_id: string;
+          role: "user" | "assistant";
+          message: string;
+          screenshot_url: string | null;
+          created_at: string;
+        };
+        Insert: Insert<Database["public"]["Tables"]["support_messages"]["Row"]>;
+        Update: Update<Database["public"]["Tables"]["support_messages"]["Row"]>;
         Relationships: [];
       };
       packages_settings: {
