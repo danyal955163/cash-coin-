@@ -122,7 +122,10 @@ export default function AdTaskCard({ task, userId, disabled }: { task: AdTask; u
       const { data, error } = await createClient().rpc("claim_ad_task", { p_task_id: task.id });
       if (error) throw error;
       const result = (data ?? {}) as ClaimResult;
-      toast.success(`+${result.coins_earned ?? result.coins ?? task.coins_reward} coins earned!`);
+      const earnedCoins = result.coins_earned ?? result.coins ?? task.coins_reward;
+      const { error: earningsError } = await createClient().from("earnings_log").insert({ user_id: userId, source: "ad", description: `Ad task: ${task.title}`, coins: earnedCoins, pkr_value: earnedCoins / 100 });
+      if (earningsError) console.error("Ad earnings log error:", earningsError);
+      toast.success(`+${earnedCoins} coins earned!`);
       startCooldown(result.cooldown_seconds ?? defaultCooldown);
       router.refresh();
     } catch (error) {

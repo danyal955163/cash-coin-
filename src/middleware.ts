@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
   const { response, user } = await updateSession(request);
   const { pathname } = request.nextUrl;
   const isAdminRoute = pathname.startsWith("/admin");
-  const isProtectedRoute = ["/dashboard", "/packages", "/deposit", "/tasks", "/wallet", "/withdrawal", "/profile", "/referral", "/help", "/timewall"].some((route) => pathname.startsWith(route)) || isAdminRoute;
+  const isProtectedRoute = ["/dashboard", "/packages", "/deposit", "/tasks", "/wallet", "/withdrawal", "/profile", "/referral", "/help"].some((route) => pathname.startsWith(route)) || isAdminRoute;
   const isAuthRoute = pathname === "/login" || pathname === "/signup";
 
   if (isAdminRoute) {

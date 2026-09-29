@@ -2,14 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CheckCircle, Gift, Home, Settings, UsersRound } from "lucide-react";
+import { CheckCircle, Home, Settings, UsersRound } from "lucide-react";
 
 export default function BottomNav({ isAdmin }: { isAdmin: boolean }) {
   const pathname = usePathname();
   const items = [
     { label: "Dashboard", href: "/dashboard", color: "text-emerald-500", icon: Home },
     { label: "Tasks", href: "/tasks", color: "text-purple-500", icon: CheckCircle },
-    { label: "TimeWall", href: "/timewall", color: "text-indigo-500", icon: Gift },
     { label: "Team", href: "/referral", color: "text-pink-500", icon: UsersRound },
     ...(isAdmin ? [{ label: "Admin", href: "/admin", color: "text-slate-600", icon: Settings }] : []),
   ];

@@ -174,6 +174,24 @@ export interface Database {
         Update: Update<Database["public"]["Tables"]["support_tickets"]["Row"]>;
         Relationships: [];
       };
+      earnings_log: {
+        Row: {
+          id: string;
+          user_id: string;
+          source: string;
+          description: string | null;
+          coins: number | null;
+          pkr_value: number | null;
+          related_user_id: string | null;
+          related_user_name: string | null;
+          related_username: string | null;
+          package_name: string | null;
+          created_at: string;
+        };
+        Insert: Insert<Database["public"]["Tables"]["earnings_log"]["Row"]>;
+        Update: Update<Database["public"]["Tables"]["earnings_log"]["Row"]>;
+        Relationships: [];
+      };
       timewall_transactions: {
         Row: {
           id: string;
