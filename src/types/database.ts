@@ -245,6 +245,7 @@ export interface Database {
       complete_ad_task: { Args: { p_task_id: string }; Returns: Json };
       claim_ad_task: { Args: { p_task_id: string }; Returns: Json };
       credit_timewall_coins: { Args: { p_username: string; p_revenue: number; p_coins: number; p_tx_id: string; p_offer_name: string; p_ip: string; p_raw: Json }; Returns: Json };
+      credit_cpalead_coins: { Args: { p_subid: string; p_payout: number; p_coins: number; p_lead_id: string; p_campaign_id: string; p_campaign_name: string; p_ip: string; p_raw: Json }; Returns: Json };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
