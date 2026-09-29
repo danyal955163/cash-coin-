@@ -68,6 +68,7 @@ export interface Database {
           status: string;
           created_by: string | null;
           task_type: "one_time" | "repeated" | "ad" | "timewall";
+          is_free_task: boolean;
           ad_duration_seconds: number | null;
           ad_url: string | null;
           ad_daily_limit: number;
