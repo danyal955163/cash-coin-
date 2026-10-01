@@ -1,3 +1,17 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "CashCoin - Best Online Earning App in Pakistan",
+  description: "Earn real money online in Pakistan without investment. Complete tasks, watch ads, and withdraw via JazzCash or EasyPaisa. Free to join.",
+  keywords: ["online earning app", "earn money online Pakistan", "free earning app without investment", "paisa kamane wala app", "JazzCash earning app", "task earning app Pakistan", "online earning without investment", "CashCoin"],
+  openGraph: {
+    title: "CashCoin - Best Online Earning App in Pakistan",
+    description: "Earn money online without investment. Complete tasks and get paid via JazzCash.",
+    url: "https://cash-coin-peach.vercel.app",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+  },
+};
+
 import Link from "next/link";
 
 export default function Home() {

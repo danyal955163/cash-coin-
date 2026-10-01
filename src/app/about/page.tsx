@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About CashCoin - Pakistan's Trusted Earning Platform",
+  description: "Learn how CashCoin helps Pakistanis earn money online without investment through simple tasks and real rewards.",
+};
+
 import Link from "next/link";
 import { SOCIAL_LINKS } from "@/lib/constants";
 const steps = ["Sign up for free in seconds", "Choose a package (Free or paid)", "Complete daily tasks", "Earn coins automatically", "Withdraw to JazzCash/EasyPaisa"];

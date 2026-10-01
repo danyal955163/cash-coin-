@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Packages - CashCoin Earning Plans",
+  description: "Compare CashCoin earning packages in Pakistan, including 15-day plans with daily tasks and higher online earning potential.",
+};
+
 import PackageCard from "@/components/packages/PackageCard";
 import { createClient } from "@/lib/supabase/server";
 
