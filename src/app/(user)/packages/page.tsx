@@ -1,34 +1,6 @@
 import PackageCard, { type PackageCardData } from "@/components/packages/PackageCard";
 import { createClient } from "@/lib/supabase/server";
 
-const fallbackPackages: PackageCardData[] = [
-  { id: "free", name: "Free", price: 0, daily_tasks: 1, per_task_coins: 10, duration: "7 days", description: "Try CashCoin with a starter package." },
-  { id: "200", name: "200 PKR Package", price: 200, daily_tasks: 5, per_task_coins: 20, duration: "30 days", description: "A simple package to start earning more." },
-  { id: "300", name: "300 PKR Package", price: 300, daily_tasks: 8, per_task_coins: 25, duration: "30 days", description: "Build your daily earning routine." },
-  { id: "400", name: "400 PKR Package", price: 400, daily_tasks: 12, per_task_coins: 30, duration: "30 days", description: "Unlock more tasks and higher rewards." },
-  { id: "500", name: "500 PKR Package", price: 500, daily_tasks: 16, per_task_coins: 40, duration: "30 days", description: "Our highest base package for active earners." },
-];
-
-export default async function PackagesPage() {
-  const supabase = createClient();
-  const { data } = await supabase
-    .from("packages_settings")
-    .select("*")
-    .eq("is_active", true)
-    .order("price", { ascending: true });
-
-  const packages: PackageCardData[] = data?.length ? data : fallbackPackages;
-
-  return (
-    <section>
-      <div className="mb-10">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-600">Packages</p>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight text-gray-900">Choose your earning package</h1>
-        <p className="mt-3 max-w-2xl text-gray-600">Select a package to unlock daily tasks and start earning coins.</p>
-      </div>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {packages.slice(0, 5).map((packageData) => <PackageCard key={packageData.id} package={packageData} />)}
-      </div>
-    </section>
-  );
-}
+const tierDefaults: Record<string, [string, string]> = { Free: ["#64748b", "#94a3b8"], Bronze: ["#b45309", "#f59e0b"], Silver: ["#64748b", "#cbd5e1"], Gold: ["#ca8a04", "#facc15"], Diamond: ["#7e22ce", "#38bdf8"] };
+const fallbackPackages: PackageCardData[] = ["Free", "Bronze", "Silver", "Gold", "Diamond"].map((name, index) => { const [primary, secondary] = tierDefaults[name]; return { id: name.toLowerCase(), package_name: name, price: [0, 200, 300, 400, 500][index], original_price: 0, discount_percentage: 0, daily_tasks: [1, 5, 8, 12, 16][index], per_task_coins: [10, 20, 25, 30, 40][index], duration_days: name === "Free" ? 7 : 30, description: "Earn coins by completing tasks.", badge_text: name === "Diamond" ? "Most Popular" : null, is_featured: name === "Diamond", color_primary: primary, color_secondary: secondary, image_url: null }; });
+export default async function PackagesPage() { const { data } = await createClient().from("packages_settings").select("*").eq("is_active", true).order("display_order", { ascending: true }); const packages: PackageCardData[] = data?.length ? data.map((item) => { const name = item.package_name || item.name; const [primary, secondary] = tierDefaults[name] ?? tierDefaults.Free; return { id: item.id, package_name: name, price: item.price, original_price: item.original_price ?? 0, discount_percentage: item.discount_percentage ?? 0, daily_tasks: item.daily_tasks, per_task_coins: item.per_task_coins, duration_days: item.duration_days, description: item.description, badge_text: item.badge_text, is_featured: item.is_featured ?? name === "Diamond", color_primary: item.color_primary || primary, color_secondary: item.color_secondary || secondary, image_url: item.image_url }; }) : fallbackPackages; return <section className="mx-auto max-w-5xl px-3"><div className="mb-6"><p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-600">Packages</p><h1 className="mt-2 text-2xl font-black tracking-tight text-gray-900 sm:text-3xl">Choose your earning package</h1><p className="mt-2 text-sm text-gray-600">Select a package to unlock daily tasks and start earning coins.</p></div><div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 lg:gap-4">{packages.map((pkg) => <PackageCard key={pkg.id} package={pkg} />)}</div></section>; }

@@ -123,12 +123,23 @@ export interface Database {
         Row: {
           id: string;
           name: string;
+          package_name: string | null;
+          display_order: number;
           price: number;
+          original_price: number;
+          discount_percentage: number;
           daily_tasks: number;
           per_task_coins: number;
           duration_days: number;
           duration: string;
+          min_withdrawal_pkr: number;
           description: string | null;
+          badge_text: string | null;
+          is_featured: boolean;
+          color_primary: string;
+          color_secondary: string;
+          color_accent: string;
+          image_url: string | null;
           coin_reward: number;
           is_active: boolean;
           created_at: string;

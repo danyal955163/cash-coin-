@@ -25,3 +25,5 @@ input:not([type="file"]), textarea, select { font-size: 16px !important; }
 .animate-float-subtle { animation: float-subtle 3s ease-in-out infinite; }
 .animate-pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
 .animate-coin-glow { animation: coin-glow 2s ease-in-out infinite; }
+
+.field { display: block; width: 100%; margin-top: 0.5rem; border-radius: 0.5rem; border: 1px solid rgb(203 213 225); padding: 0.625rem 0.75rem; font-size: 0.875rem; font-weight: 400; }
