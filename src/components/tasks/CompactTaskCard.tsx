@@ -2,9 +2,9 @@
 
 import { Check, Clock3, Gift, RotateCcw } from "lucide-react";
 
-type Task = { title: string; image_url: string | null; coins_reward: number; task_type: "one_time" | "repeated" | "ad"; requires_game_id?: boolean };
+type Task = { title: string; image_url: string | null; coins_reward: number; task_type: "one_time" | "repeated" | "ad" | "monetag_ad"; requires_game_id?: boolean };
 export default function CompactTaskCard({ task, onClick, userStatus }: { task: Task; onClick: () => void; userStatus?: "available" | "pending" | "approved" | "rejected" }) {
-  const type = task.task_type === "ad" ? { label: "AD", color: "bg-orange-500" } : task.task_type === "repeated" ? { label: "↻", color: "bg-green-500" } : { label: "1×", color: "bg-blue-500" };
+  const type = task.task_type === "ad" ? { label: "AD", color: "bg-orange-500" } : task.task_type === "monetag_ad" ? { label: "MON", color: "bg-purple-600" } : task.task_type === "repeated" ? { label: "↻", color: "bg-green-500" } : { label: "1×", color: "bg-blue-500" };
   return <button type="button" onClick={onClick} aria-label={`Start ${task.title}`} className="group relative aspect-square min-w-0 overflow-hidden rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 text-left shadow-sm ring-1 ring-slate-200 transition hover:scale-[1.02]">
     {task.image_url ? <img src={task.image_url} alt="" className="absolute inset-0 h-full w-full object-cover" /> : <Gift className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white/80" size={34} />}
     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent" />
