@@ -9,3 +9,6 @@ export const SOCIAL_LINKS = {
   email: "info@cashcoin.pk",
   supportEmail: "support@cashcoin.pk",
 } as const;
+
+export const REFERRAL_SIGNUP_BONUS_PKR = 50;
+export const REFERRAL_LIFETIME_PERCENT = 10;
