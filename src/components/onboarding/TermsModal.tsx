@@ -1,0 +1,13 @@
+"use client";
+
+import Link from "next/link";
+import { Check, ShieldCheck, X } from "lucide-react";
+import { useEffect, useState } from "react";
+
+export default function TermsModal() {
+  const [open, setOpen] = useState(false); const [accepted, setAccepted] = useState(false);
+  useEffect(() => { if (!localStorage.getItem("terms_accepted")) setOpen(true); }, []);
+  if (!open) return null;
+  const accept = () => { if (!accepted) return; localStorage.setItem("terms_accepted", "true"); setOpen(false); };
+  return <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"><div role="dialog" aria-modal="true" aria-labelledby="terms-title" className="animate-fade-in-up max-h-[90vh] w-full max-w-md overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl sm:p-8"><div className="flex items-start justify-between gap-4"><div><div className="mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-emerald-100 text-emerald-600"><ShieldCheck size={26} /></div><h2 id="terms-title" className="text-2xl font-black tracking-tight text-slate-900">Welcome to CashCoin</h2><p className="mt-2 text-sm leading-6 text-slate-600">Before you continue, please read and accept our terms.</p></div><button type="button" onClick={() => setOpen(false)} aria-label="Close" className="rounded-full p-2 text-slate-400 hover:bg-slate-100"><X size={20} /></button></div><ul className="mt-6 space-y-3 text-sm text-slate-700">{["Free to join, no investment", "Earn coins by completing tasks", "100 coins = 1 PKR", "Withdraw via JazzCash/EasyPaisa", "Minimum withdrawal: 200 PKR", "Referral bonuses available", "Data is secure and encrypted"].map((item) => <li key={item} className="flex items-start gap-3"><span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-600"><Check size={13} strokeWidth={3} /></span><span>{item}</span></li>)}</ul><Link href="/terms-of-service" target="_blank" className="mt-6 inline-flex text-sm font-bold text-emerald-600 underline underline-offset-4">Read Full Terms</Link><label className="mt-6 flex cursor-pointer items-start gap-3 rounded-2xl bg-slate-50 p-4 text-sm font-semibold leading-6 text-slate-700"><input type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} className="mt-1 h-4 w-4 accent-emerald-600" /><span>I have read and accept the Terms of Service &amp; Privacy Policy</span></label><button type="button" onClick={accept} disabled={!accepted} className="mt-5 w-full rounded-xl bg-emerald-600 px-4 py-3 text-sm font-black text-white transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:bg-slate-300">Accept &amp; Continue</button></div></div>;
+}
