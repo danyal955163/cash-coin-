@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import Footer from "@/components/layout/Footer";
-import PWARegistration from "@/components/pwa/PWARegistration";
+import ServiceWorkerRegister from "@/components/pwa/ServiceWorkerRegister";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -11,12 +11,19 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://cash-coin-peach.vercel.app"),
   title: "CashCoin - Earn Real Money in Pakistan",
   description: "Pakistan's trusted task earning platform.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "CashCoin",
+  },
+  formatDetection: { telephone: false },
   icons: {
     icon: [
       { url: "/icon.svg", type: "image/svg+xml" },
       { url: "/favicon.ico", sizes: "any" },
     ],
-    apple: "/apple-touch-icon.png",
+    apple: "/icon-192.png",
     shortcut: "/favicon.ico",
   },
   openGraph: {
@@ -53,12 +60,15 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#10B981" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="CashCoin" />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
       <body className={`${inter.variable} bg-gray-50 font-sans text-gray-900`}>
-        <PWARegistration />
+        <ServiceWorkerRegister />
         {children}
         <Footer />
         <Toaster position="top-right" />
