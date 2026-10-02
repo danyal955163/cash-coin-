@@ -4,60 +4,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import toast from "react-hot-toast";
-
 import { signIn } from "@/lib/auth";
 
 export default function LoginForm() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsLoading(true);
-    try {
-      const { error } = await signIn(email.trim(), password);
-      if (error) {
-        toast.error(error.message || "Invalid email or password.");
-        return;
-      }
-      router.push("/dashboard");
-      router.refresh();
-    } catch {
-      toast.error("Unable to log in. Please check your connection and try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  return (
-    <div className="animate-fade-in-up rounded-3xl bg-white p-8 shadow-xl shadow-emerald-100 ring-1 ring-slate-100">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
-        <p className="mt-2 text-sm text-gray-600">Log in to continue earning with CashCoin.</p>
-      </div>
-      <form className="space-y-5" onSubmit={handleSubmit}>
-        <label className="block text-sm font-medium text-gray-700">
-          Email
-          <input className="mt-2 block w-full rounded-lg border border-slate-200 px-3 py-2.5 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required autoComplete="email" />
-        </label>
-        <label className="block text-sm font-medium text-gray-700">
-          Password
-          <input className="mt-2 block w-full rounded-lg border border-slate-200 px-3 py-2.5 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required autoComplete="current-password" />
-        </label>
-        <div className="text-right">
-          <Link href="/forgot-password" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700">
-            Forgot Password?
-          </Link>
-        </div>
-        <button className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-200 transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60" type="submit" disabled={isLoading}>
-          {isLoading ? "⏳ Logging in..." : "Login"}
-        </button>
-      </form>
-      <p className="mt-6 text-center text-sm text-gray-600">
-        Don&apos;t have account? <Link href="/signup" className="font-semibold text-emerald-600 hover:text-emerald-700">Sign Up</Link>
-      </p>
-    </div>
-  );
+  const t = (key: string) => ({ welcomeBack: "Welcome back", joinToday: "Join today and start earning", email: "Email", password: "Password", forgotPassword: "Forgot Password?", login: "Log In", dontHaveAccount: "Don't have an account?", signup: "Sign Up" }[key] ?? key); const router = useRouter(); const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [isLoading, setIsLoading] = useState(false);
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) { event.preventDefault(); setIsLoading(true); try { const { error } = await signIn(email.trim(), password); if (error) { toast.error(error.message || "Invalid email or password."); return; } router.push("/dashboard"); router.refresh(); } catch { toast.error("Unable to log in. Please check your connection and try again."); } finally { setIsLoading(false); } }
+  return <div className="animate-fade-in-up rounded-3xl bg-white p-8 shadow-xl shadow-emerald-100 ring-1 ring-slate-100"><div className="mb-8"><h1 className="text-2xl font-bold text-gray-900">{t("welcomeBack")}</h1><p className="mt-2 text-sm text-gray-600">{t("joinToday")}</p></div><form className="space-y-5" onSubmit={handleSubmit}><label className="block text-sm font-medium text-gray-700">{t("email")}<input className="mt-2 block w-full rounded-lg border border-slate-200 px-3 py-2.5 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required autoComplete="email" /></label><label className="block text-sm font-medium text-gray-700">{t("password")}<input className="mt-2 block w-full rounded-lg border border-slate-200 px-3 py-2.5 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required autoComplete="current-password" /></label><div className="text-right"><Link href="/forgot-password" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700">{t("forgotPassword")}</Link></div><button className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-200 transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60" type="submit" disabled={isLoading}>{isLoading ? "⏳ Loading..." : t("login")}</button></form><p className="mt-6 text-center text-sm text-gray-600">{t("dontHaveAccount")} <Link href="/signup" className="font-semibold text-emerald-600 hover:text-emerald-700">{t("signup")}</Link></p></div>;
 }

@@ -23,6 +23,7 @@ export interface Database {
           total_deposits: number;
           total_earnings: number;
           coin_balance: number;
+          language_preference: "en" | "ur";
           created_at: string;
           updated_at: string;
         };
