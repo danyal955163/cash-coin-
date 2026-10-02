@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs";
-const MODELS = ["google/gemma-4-26b-a4b-it:free", "google/gemma-4-31b-it:free", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free", "openrouter/free"];
+const MODELS = ["qwen/qwen-2.5-vl-7b-instruct:free", "google/gemma-4-26b-a4b-it:free", "google/gemma-4-31b-it:free", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free", "openrouter/free"];
 type Decision = "approve" | "reject" | "manual";
 type AiResult = { score: number; decision: Decision; reason: string; matches_reference: boolean; screenshot_clear: boolean; screenshot_authentic: boolean };
 type OpenRouterResponse = { choices?: Array<{ message?: { content?: string } }>; error?: { message?: string } };
