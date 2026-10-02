@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs";
-const MODEL = "meta-llama/llama-3.2-11b-vision-instruct:free";
+const MODELS = ["google/gemma-4-26b-a4b-it:free", "google/gemma-4-31b-it:free", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free", "openrouter/free"];
 type Decision = "approve" | "reject" | "manual";
 type AiResult = { score: number; decision: Decision; reason: string; matches_reference: boolean; screenshot_clear: boolean; screenshot_authentic: boolean };
 type OpenRouterResponse = { choices?: Array<{ message?: { content?: string } }>; error?: { message?: string } };
@@ -28,9 +28,17 @@ export async function POST(request: NextRequest) {
     const content: Array<Record<string, unknown>> = [];
     if (task.reference_image_url) { content.push({ type: "text", text: "REFERENCE IMAGE:" }); content.push(await imageData(task.reference_image_url, "reference")); }
     content.push({ type: "text", text: "USER PROOF IMAGE:" }); content.push(await imageData(proof_image_url, "proof")); content.push({ type: "text", text: prompt });
-    const aiResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", { method: "POST", headers: { Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`, "Content-Type": "application/json", "HTTP-Referer": "https://cash-coin-peach.vercel.app", "X-Title": "CashCoin AI Review" }, body: JSON.stringify({ model: MODEL, messages: [{ role: "user", content }], temperature: 0.3, max_tokens: 500 }) });
-    const aiData = await aiResponse.json() as OpenRouterResponse;
-    if (!aiResponse.ok) throw new Error(aiData.error?.message || "OpenRouter review failed.");
+    let aiData: OpenRouterResponse | null = null;
+    let lastError = "OpenRouter review failed.";
+    for (const model of MODELS) {
+      try {
+        const aiResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", { method: "POST", headers: { Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`, "Content-Type": "application/json", "HTTP-Referer": "https://cash-coin-peach.vercel.app", "X-Title": "CashCoin AI Review" }, body: JSON.stringify({ model, messages: [{ role: "user", content }], temperature: 0.3, max_tokens: 500 }) });
+        const candidate = await aiResponse.json() as OpenRouterResponse;
+        if (aiResponse.ok && candidate.choices?.[0]?.message?.content) { aiData = candidate; break; }
+        lastError = candidate.error?.message || `Model ${model} failed.`;
+      } catch (error) { lastError = error instanceof Error ? error.message : String(error); }
+    }
+    if (!aiData) throw new Error(lastError);
     const result = parseResult(aiData.choices?.[0]?.message?.content || "");
     const status = result.decision === "approve" ? "approved" : result.decision === "reject" ? "rejected" : "pending";
     const { error: updateError } = await supabase.from("user_tasks").update({ ai_score: result.score, ai_reason: result.reason, ai_decision: result.decision, status, coins_earned: result.decision === "approve" ? task.coins_reward : 0, completed_at: result.decision === "approve" ? new Date().toISOString() : null }).eq("id", user_task_id).eq("status", "pending");
