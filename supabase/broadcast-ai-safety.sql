@@ -12,9 +12,19 @@ create table if not exists public.broadcasts (
 );
 create index if not exists broadcasts_active_created_idx on public.broadcasts (is_active, created_at desc);
 alter table public.broadcasts enable row level security;
+drop policy if exists "broadcasts_read_active" on public.broadcasts;
+create policy "broadcasts_read_active" on public.broadcasts for select to authenticated using (is_active = true or public.is_admin());
+drop policy if exists "broadcasts_admin_insert" on public.broadcasts;
+create policy "broadcasts_admin_insert" on public.broadcasts for insert to authenticated with check (public.is_admin());
+drop policy if exists "broadcasts_admin_update" on public.broadcasts;
+create policy "broadcasts_admin_update" on public.broadcasts for update to authenticated using (public.is_admin()) with check (public.is_admin());
 insert into storage.buckets (id, name, public) values ('broadcasts', 'broadcasts', true) on conflict (id) do nothing;
 insert into storage.buckets (id, name, public) values ('task-references', 'task-references', true) on conflict (id) do nothing;
 insert into storage.buckets (id, name, public) values ('support-attachments', 'support-attachments', true) on conflict (id) do nothing;
+drop policy if exists "broadcasts_public_read" on storage.objects;
+create policy "broadcasts_public_read" on storage.objects for select using (bucket_id = 'broadcasts');
+drop policy if exists "broadcasts_admin_upload" on storage.objects;
+create policy "broadcasts_admin_upload" on storage.objects for insert to authenticated with check (bucket_id = 'broadcasts' and public.is_admin());
 create table if not exists public.ai_review_log (
   id uuid primary key default gen_random_uuid(), user_task_id uuid not null unique references public.user_tasks(id) on delete cascade, task_id uuid references public.tasks(id) on delete set null, user_id uuid references auth.users(id) on delete set null, ai_score integer, ai_decision text, ai_reason text, created_at timestamptz not null default now()
 );
