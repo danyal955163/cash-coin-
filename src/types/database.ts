@@ -22,6 +22,7 @@ export interface Database {
           referral_code: string | null;
           total_deposits: number;
           total_earnings: number;
+          total_withdrawals: number;
           coin_balance: number;
           language_preference: "en" | "ur";
           created_at: string;
@@ -265,6 +266,18 @@ export interface Database {
         Update: Update<Database["public"]["Tables"]["timewall_transactions"]["Row"]>;
         Relationships: [];
       };
+      broadcasts: {
+        Row: { id: string; title: string; message: string; image_url: string | null; link_url: string | null; link_text: string | null; is_active: boolean; created_by: string | null; created_at: string };
+        Insert: Insert<Database["public"]["Tables"]["broadcasts"]["Row"]>;
+        Update: Update<Database["public"]["Tables"]["broadcasts"]["Row"]>;
+        Relationships: [];
+      };
+      ai_review_log: {
+        Row: { id: string; user_task_id: string; task_id: string | null; user_id: string | null; ai_score: number | null; ai_decision: string | null; ai_reason: string | null; created_at: string };
+        Insert: Insert<Database["public"]["Tables"]["ai_review_log"]["Row"]>;
+        Update: Update<Database["public"]["Tables"]["ai_review_log"]["Row"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -278,6 +291,7 @@ export interface Database {
       complete_ad_task: { Args: { p_task_id: string }; Returns: Json };
       claim_ad_task: { Args: { p_task_id: string }; Returns: Json };
       credit_task_coins: { Args: { p_user_id: string; p_coins: number; p_task_title: string }; Returns: Json };
+      approve_single_user_task: { Args: { p_user_task_id: string; p_ai_score: number; p_ai_reason: string }; Returns: Json };
       credit_timewall_coins: { Args: { p_username: string; p_revenue: number; p_coins: number; p_tx_id: string; p_offer_name: string; p_ip: string; p_raw: Json }; Returns: Json };
       credit_cpalead_coins: { Args: { p_subid: string; p_payout: number; p_coins: number; p_lead_id: string; p_campaign_id: string; p_campaign_name: string; p_ip: string; p_raw: Json }; Returns: Json };
     };

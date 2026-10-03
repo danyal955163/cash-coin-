@@ -10,6 +10,7 @@ const links = [
   ["Deposits", "/admin/deposits"],
   ["Tasks", "/admin/tasks"],
   ["Task History", "/admin/task-history"],
+  ["Broadcast", "/admin/broadcast"],
   ["Withdrawals", "/admin/withdrawals"],
   ["Users", "/admin/users"],
   ["Packages Settings", "/admin/packages-settings"],

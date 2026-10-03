@@ -67,6 +67,8 @@ export default function TasksManager() {
       }
       let referenceImageUrl = editing?.reference_image_url ?? null;
       const supportsAiReview = form.task_type === "one_time" || form.task_type === "repeated";
+      if (form.ai_review_enabled && supportsAiReview && !editing?.reference_image_url && !form.reference_image) { toast.error("Reference image is required when AI Review is enabled."); return; }
+      if (form.ai_review_enabled && supportsAiReview && !form.ai_instructions.trim()) { toast.error("AI Instructions are required when AI Review is enabled."); return; }
       if (form.ai_review_enabled && supportsAiReview && form.reference_image) {
         const fileName = `${Date.now()}-${form.reference_image.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
         const { data: uploadData, error: uploadError } = await supabase.storage.from("task-references").upload(fileName, form.reference_image, { cacheControl: "3600", upsert: false, contentType: form.reference_image.type });
