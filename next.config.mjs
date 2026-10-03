@@ -5,6 +5,10 @@ const nextConfig = {
   async headers() {
     return [
       {
+        source: "/((?!_next/|favicon.ico|icon.svg|manifest.json|sw.js|og-image.png).*)",
+        headers: [{ key: "Cache-Control", value: "no-store, must-revalidate" }],
+      },
+      {
         source: "/sw.js",
         headers: [
           { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
