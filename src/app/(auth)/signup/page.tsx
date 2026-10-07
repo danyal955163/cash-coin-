@@ -13,5 +13,5 @@ export default function SignupPage({
 }: {
   searchParams: { ref?: string };
 }) {
-  return <><LiveActivityNotification /><SignupForm initialReferralCode={searchParams.ref ?? ""} /></>;
+  return <><LiveActivityNotification /><div className="mb-4 rounded-2xl bg-amber-50 px-4 py-3 text-center text-xs font-semibold text-amber-900 ring-1 ring-amber-200">Create an account and make your first move.</div><SignupForm initialReferralCode={searchParams.ref ?? ""} /></>;
 }

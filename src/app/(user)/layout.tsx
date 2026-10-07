@@ -6,5 +6,5 @@ export default async function UserLayout({ children }: Readonly<{ children: Reac
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const isAdmin = user?.email?.toLowerCase() === "muhammaddanyal4949@gmail.com";
-  return <div className="flex min-h-screen flex-col bg-slate-50"><Navbar /><main className="flex-1 pb-24"><div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">{children}</div></main><BottomNav isAdmin={isAdmin} /></div>;
+  return <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900"><Navbar /><main className="flex-1 pb-28"><div className="mx-auto w-full max-w-7xl px-4 py-7 sm:px-6 sm:py-9 lg:px-8 lg:py-10">{children}</div></main><BottomNav isAdmin={isAdmin} /></div>;
 }

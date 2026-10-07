@@ -9,5 +9,5 @@ import LoginForm from "@/components/auth/LoginForm";
 import LiveActivityNotification from "@/components/social-proof/LiveActivityNotification";
 
 export default function LoginPage() {
-  return <><LiveActivityNotification /><LoginForm /></>;
+  return <><LiveActivityNotification /><div className="mb-4 rounded-2xl bg-white/85 px-4 py-3 text-center text-xs font-semibold text-emerald-800 ring-1 ring-emerald-100">Welcome back to your CashCoin account.</div><LoginForm /></>;
 }

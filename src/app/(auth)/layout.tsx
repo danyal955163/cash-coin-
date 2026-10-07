@@ -1,7 +1,20 @@
 import Link from "next/link";
-import { Sparkles } from "lucide-react";
+import { ArrowLeft, ShieldCheck } from "lucide-react";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 
 export default function AuthLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-blue-50 px-5 py-12"><div className="absolute right-5 top-5 z-20"><LanguageSwitcher /></div><div className="pointer-events-none absolute left-8 top-16 text-5xl opacity-10">🪙</div><div className="pointer-events-none absolute bottom-20 right-10 text-6xl opacity-10">💰</div><div className="relative z-10 w-full max-w-md"><div className="mb-6 flex flex-col items-center text-center"><Link href="/" aria-label="CashCoin home" className="group"><div className="relative mx-auto grid h-20 w-20 place-items-center rounded-full bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-500 text-4xl shadow-lg shadow-amber-200 animate-float-subtle animate-coin-glow"><span aria-hidden="true">💰</span><Sparkles size={17} className="absolute right-1 top-1 text-yellow-100" /></div><h1 className="mt-4 text-3xl font-black tracking-tight text-transparent [background:linear-gradient(90deg,#059669,#2563eb)_text]">CashCoin</h1></Link><p className="mt-1 text-sm text-gray-500">Pakistan&apos;s Trusted Earning Platform</p><div className="mt-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-gradient-to-r from-emerald-50 to-blue-50 px-4 py-2"><span className="h-2 w-2 rounded-full bg-green-500 animate-pulse-dot" /><span className="text-sm font-semibold text-emerald-700">Join 1,00,000+ Users Earning Today</span></div></div>{children}<p className="mt-5 text-center text-xs font-medium text-gray-500">⭐⭐⭐⭐⭐ 4.8/5 Rating from 10,000+ reviews</p></div></main>;
+  return (
+    <main className="relative flex min-h-screen flex-col overflow-hidden bg-slate-50 text-slate-900">
+      <header className="relative z-10 border-b border-slate-200/70 bg-white/90 backdrop-blur-xl">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+          <Link href="/" className="flex items-center gap-2.5 text-xl font-black tracking-tight text-emerald-800"><span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 text-amber-300"><ShieldCheck size={22} /></span>CashCoin</Link>
+          <div className="flex items-center gap-3"><Link href="/" className="hidden items-center gap-1.5 text-sm font-semibold text-slate-500 transition hover:text-emerald-700 sm:inline-flex"><ArrowLeft size={16} /> Back to home</Link><LanguageSwitcher /></div>
+        </div>
+      </header>
+      <div className="relative isolate flex flex-1 items-center justify-center px-4 py-10 sm:px-6 sm:py-16">
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_18%_20%,rgba(16,185,129,0.13),transparent_42%),radial-gradient(ellipse_at_85%_85%,rgba(168,85,247,0.09),transparent_42%)]" />
+        <div className="w-full max-w-md"><div className="mb-7 text-center"><span className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-emerald-700 ring-1 ring-emerald-100"><ShieldCheck size={14} /> Secure member access</span><p className="mt-4 text-sm text-slate-500">Your earning journey starts here.</p></div>{children}<p className="mt-6 text-center text-xs text-slate-500">CashCoin · Earn with confidence</p></div>
+      </div>
+    </main>
+  );
 }
