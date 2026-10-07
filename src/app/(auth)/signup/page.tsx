@@ -8,10 +8,11 @@ export const metadata: Metadata = {
 import SignupForm from "@/components/auth/SignupForm";
 import LiveActivityNotification from "@/components/social-proof/LiveActivityNotification";
 
-export default function SignupPage({
+export default async function SignupPage({
   searchParams,
 }: {
-  searchParams: { ref?: string };
+  searchParams: Promise<{ ref?: string }>;
 }) {
-  return <><LiveActivityNotification /><div className="mb-4 rounded-2xl bg-amber-50 px-4 py-3 text-center text-xs font-semibold text-amber-900 ring-1 ring-amber-200">Create an account and make your first move.</div><SignupForm initialReferralCode={searchParams.ref ?? ""} /></>;
+  const params = await searchParams;
+  return <><LiveActivityNotification /><div className="mb-4 rounded-2xl bg-amber-50 px-4 py-3 text-center text-xs font-semibold text-amber-900 ring-1 ring-amber-200">Create an account and make your first move.</div><SignupForm initialReferralCode={params.ref ?? ""} /></>;
 }

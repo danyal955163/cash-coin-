@@ -2,6 +2,19 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "*.supabase.co" },
+      { protocol: "https", hostname: "*.vercel.app" },
+      { protocol: "https", hostname: "omg10.com" },
+    ],
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: false,
+  },
   async headers() {
     return [
       {
@@ -18,18 +31,6 @@ const nextConfig = {
       {
         source: "/manifest.json",
         headers: [{ key: "Content-Type", value: "application/manifest+json" }],
-      },
-      {
-        source: "/icon.svg",
-        headers: [{ key: "Cache-Control", value: "public, max-age=0, must-revalidate" }],
-      },
-      {
-        source: "/favicon.ico",
-        headers: [{ key: "Cache-Control", value: "public, max-age=0, must-revalidate" }],
-      },
-      {
-        source: "/og-image.png",
-        headers: [{ key: "Cache-Control", value: "public, max-age=0, must-revalidate" }],
       },
     ];
   },

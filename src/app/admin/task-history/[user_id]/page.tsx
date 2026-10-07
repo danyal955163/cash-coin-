@@ -2,10 +2,11 @@ import { notFound } from "next/navigation";
 import TaskHistoryDetail from "@/components/admin/TaskHistoryDetail";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function AdminTaskHistoryDetailPage({ params }: { params: { user_id: string } }) {
+export default async function AdminTaskHistoryDetailPage({ params }: { params: Promise<{ user_id: string }> }) {
+  const { user_id } = await params;
   const supabase = createClient();
-  const profileResult = await supabase.from("profiles").select("*").eq("id", params.user_id).maybeSingle();
-  const submissionsResult = await supabase.from("user_tasks").select("id, task_id, proof_image_url, coins_earned, status, created_at, game_id, game_name, account_name, terms_accepted, ai_score, ai_decision, ai_reason").eq("user_id", params.user_id).order("created_at", { ascending: false });
+  const profileResult = await supabase.from("profiles").select("*").eq("id", user_id).maybeSingle();
+  const submissionsResult = await supabase.from("user_tasks").select("id, task_id, proof_image_url, coins_earned, status, created_at, game_id, game_name, account_name, terms_accepted, ai_score, ai_decision, ai_reason").eq("user_id", user_id).order("created_at", { ascending: false });
   const profile = profileResult.data;
   const submissions = submissionsResult.data;
   if (!profile) notFound();

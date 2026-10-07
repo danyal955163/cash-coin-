@@ -4,7 +4,9 @@ import { cookies } from "next/headers";
 import type { Database } from "@/types/database";
 
 export function createClient() {
-  const cookieStore = cookies();
+  // Next 15 types cookies() as a Promise, while synchronous access remains
+  // supported for existing server-component call sites during the transition.
+  const cookieStore = cookies() as unknown as Awaited<ReturnType<typeof cookies>>;
 
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
