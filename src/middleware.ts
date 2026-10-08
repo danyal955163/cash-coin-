@@ -5,7 +5,15 @@ import { updateSession } from "@/lib/supabase/middleware";
 const ADMIN_EMAIL = "muhammaddanyal4949@gmail.com";
 
 export async function middleware(request: NextRequest) {
-  const { response, user } = await updateSession(request);
+  let response = NextResponse.next({ request });
+  let user: Awaited<ReturnType<typeof updateSession>>["user"] = null;
+  try {
+    const session = await updateSession(request);
+    response = session.response;
+    user = session.user;
+  } catch (error) {
+    console.error("Supabase middleware error:", error);
+  }
   const { pathname } = request.nextUrl;
   const isAdminRoute = pathname.startsWith("/admin");
   const isProtectedRoute = ["/dashboard", "/packages", "/deposit", "/tasks", "/wallet", "/withdrawal", "/profile", "/referral", "/help"].some((route) => pathname.startsWith(route)) || isAdminRoute;

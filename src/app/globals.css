@@ -29,3 +29,18 @@ p, h1, h2, h3, h4, h5, h6, span, div { overflow-wrap: break-word; }
 .animate-coin-glow { animation: coin-glow 2s ease-in-out infinite; }
 
 .field { display: block; width: 100%; margin-top: 0.5rem; border-radius: 0.5rem; border: 1px solid rgb(203 213 225); padding: 0.625rem 0.75rem; font-size: 0.875rem; font-weight: 400; }
+
+/* Hide hosting-provider badges without affecting the CashCoin UI. */
+iframe[src*="netlify"],
+a[href*="netlify.com"],
+a[href*="netlify.app"],
+[id*="netlify-badge"],
+[class*="netlify-badge"],
+[data-netlify],
+.netlify-identity-widget,
+#netlify-badge {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

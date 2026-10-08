@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     let lastError = "OpenRouter review failed.";
     for (const model of MODELS) {
       try {
-        const aiResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", { method: "POST", headers: { Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`, "Content-Type": "application/json", "HTTP-Referer": "https://cash-coin-peach.vercel.app", "X-Title": "CashCoin AI Review" }, body: JSON.stringify({ model, messages: [{ role: "user", content }], temperature: 0.3, max_tokens: 500 }) });
+        const aiResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", { method: "POST", headers: { Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`, "Content-Type": "application/json", "HTTP-Referer": "https://cashcoinpro.netlify.app", "X-Title": "CashCoin AI Review" }, body: JSON.stringify({ model, messages: [{ role: "user", content }], temperature: 0.3, max_tokens: 500 }) });
         const candidate = await aiResponse.json() as OpenRouterResponse;
         if (aiResponse.ok && candidate.choices?.[0]?.message?.content) { aiData = candidate; break; }
         lastError = candidate.error?.message || `Model ${model} failed.`;

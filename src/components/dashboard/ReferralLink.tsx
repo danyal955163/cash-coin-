@@ -7,7 +7,9 @@ import { REFERRAL_LIFETIME_PERCENT, REFERRAL_SIGNUP_BONUS_PKR } from "@/lib/cons
 
 export default function ReferralLink({ username }: { username: string }) {
   const [copied, setCopied] = useState(false);
-  const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
+  const baseUrl = typeof window !== "undefined"
+    ? window.location.origin
+    : (process.env.NEXT_PUBLIC_SITE_URL || "https://cashcoinpro.netlify.app");
   const referralLink = username ? `${baseUrl}/${encodeURIComponent(username)}` : baseUrl;
   const message = `Join CashCoin and earn rewards! Sign up here: ${referralLink}`;
 

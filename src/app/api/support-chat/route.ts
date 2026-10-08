@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     let lastError = "Support AI request failed.";
     for (const model of MODELS) {
       try {
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", { method: "POST", headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", "HTTP-Referer": "https://cash-coin-peach.vercel.app", "X-Title": "CashCoin Support" }, body: JSON.stringify({ model, messages, temperature: 0.7, max_tokens: 500 }) });
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", { method: "POST", headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", "HTTP-Referer": "https://cashcoinpro.netlify.app", "X-Title": "CashCoin Support" }, body: JSON.stringify({ model, messages, temperature: 0.7, max_tokens: 500 }) });
         const candidate = await response.json() as OpenRouterResponse;
         if (response.ok && candidate.choices?.[0]?.message?.content) { data = candidate; break; }
         lastError = candidate.error?.message || `Model ${model} failed.`;
