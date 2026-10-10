@@ -69,7 +69,7 @@ export interface Database {
           category: string | null;
           status: string;
           created_by: string | null;
-          task_type: "one_time" | "repeated" | "ad" | "monetag_ad" | "timewall";
+          task_type: "one_time" | "repeated" | "ad" | "monetag_ad" | "timewall" | "social_share";
           is_free_task: boolean;
           ad_duration_seconds: number | null;
           ad_url: string | null;
@@ -81,6 +81,11 @@ export interface Database {
           ai_review_enabled: boolean;
           reference_image_url: string | null;
           ai_instructions: string | null;
+          share_message: string | null;
+          share_target: number;
+          requires_multiple_proofs: boolean;
+          min_proofs: number;
+          max_proofs: number;
           timewall_placement_id: string | null;
           reward: number;
           is_active: boolean;
@@ -97,6 +102,9 @@ export interface Database {
           user_id: string;
           task_id: string;
           proof_image_url: string | null;
+          proof_image_urls: string[] | null;
+          share_count: number;
+          share_target: number;
           coins_earned: number;
           status: string;
           completed_at: string | null;

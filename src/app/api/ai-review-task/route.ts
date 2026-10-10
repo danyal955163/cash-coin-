@@ -13,9 +13,10 @@ function parseResult(text: string): AiResult { try { const match = text.match(/\
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json() as { user_task_id?: string; task_id?: string; proof_image_url?: string; game_id?: string; account_name?: string };
-    const { user_task_id, task_id, proof_image_url, game_id, account_name } = body;
-    if (!user_task_id || !task_id || !proof_image_url) return NextResponse.json({ error: "user_task_id, task_id and proof_image_url are required." }, { status: 400 });
+    const body = await request.json() as { user_task_id?: string; task_id?: string; proof_image_url?: string; proof_image_urls?: string[]; game_id?: string; account_name?: string };
+    const { user_task_id, task_id, proof_image_url, proof_image_urls, game_id, account_name } = body;
+    const proofUrls = Array.isArray(proof_image_urls) && proof_image_urls.length ? proof_image_urls : proof_image_url ? [proof_image_url] : [];
+    if (!user_task_id || !task_id || !proofUrls.length) return NextResponse.json({ error: "user_task_id, task_id and proof_image_url are required." }, { status: 400 });
     if (!process.env.OPENROUTER_API_KEY || !process.env.SUPABASE_SERVICE_ROLE_KEY || !process.env.NEXT_PUBLIC_SUPABASE_URL) return NextResponse.json({ decision: "manual", score: 50, reason: "AI review is not configured; your proof was sent to admin review." });
     const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
     const { data: task, error: taskError } = await supabase.from("tasks").select("id, title, description, instructions, ai_instructions, ai_review_enabled, reference_image_url, coins_reward").eq("id", task_id).single();
@@ -26,10 +27,10 @@ export async function POST(request: NextRequest) {
     const { data: alreadyRan } = await supabase.from("ai_review_log").select("id").eq("user_task_id", user_task_id).maybeSingle();
     if (alreadyRan) return NextResponse.json({ decision: "manual", score: 50, reason: "AI already processed this proof." });
     if (userTask.status !== "pending") return NextResponse.json({ decision: userTask.status === "approved" ? "approve" : userTask.status === "rejected" ? "reject" : "manual", score: 50, reason: "This proof was already reviewed." });
-    const prompt = `You are a strict task proof reviewer for CashCoin. Analyze the USER PROOF IMAGE and compare it with the REFERENCE IMAGE when provided. Return JSON ONLY: {"score":0,"decision":"approve","reason":"short explanation max 100 chars","screenshot_clear":true,"screenshot_authentic":true,"matches_reference":true}. Decision rules: 90-100 approve, 50-89 manual, 0-49 reject. Approve only when the screenshot is clear, authentic, shows the requested elements, and matches the requirements/reference.\n\nTASK TITLE: ${task.title}\nDESCRIPTION: ${task.description || "N/A"}\nINSTRUCTIONS: ${task.instructions || "N/A"}\nAI INSTRUCTIONS: ${task.ai_instructions || "N/A"}\nCOINS: ${task.coins_reward}\nGAME ID: ${game_id || "not provided"}\nACCOUNT NAME: ${account_name || "not provided"}`;
+    const prompt = `You are a strict task proof reviewer for CashCoin. Analyze every USER PROOF IMAGE and compare them with the REFERENCE IMAGE when provided. Return JSON ONLY: {"score":0,"decision":"approve","reason":"short explanation max 100 chars","screenshot_clear":true,"screenshot_authentic":true,"matches_reference":true}. Decision rules: 90-100 approve, 50-89 manual, 0-49 reject. Approve only when the screenshot is clear, authentic, shows the requested elements, and matches the requirements/reference.\n\nTASK TITLE: ${task.title}\nDESCRIPTION: ${task.description || "N/A"}\nINSTRUCTIONS: ${task.instructions || "N/A"}\nAI INSTRUCTIONS: ${task.ai_instructions || "N/A"}\nCOINS: ${task.coins_reward}\nGAME ID: ${game_id || "not provided"}\nACCOUNT NAME: ${account_name || "not provided"}`;
     const content: Array<Record<string, unknown>> = [];
     if (task.reference_image_url) { content.push({ type: "text", text: "REFERENCE IMAGE:" }); content.push(await imageData(task.reference_image_url, "reference")); }
-    content.push({ type: "text", text: "USER PROOF IMAGE:" }); content.push(await imageData(proof_image_url, "proof")); content.push({ type: "text", text: prompt });
+    content.push({ type: "text", text: `USER PROOF IMAGES (${proofUrls.length}):` }); for (const [index, url] of proofUrls.entries()) content.push(await imageData(url, `proof ${index + 1}`)); content.push({ type: "text", text: `${prompt}\nFor social-share tasks, count distinct chat/contact names visible across all images. If any proof is irrelevant or duplicated, use manual or reject.` });
     let aiData: OpenRouterResponse | null = null;
     let lastError = "OpenRouter review failed.";
     for (const model of MODELS) {

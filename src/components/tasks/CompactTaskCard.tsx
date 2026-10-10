@@ -7,7 +7,7 @@ type Task = {
   description: string | null;
   image_url: string | null;
   coins_reward: number;
-  task_type: "one_time" | "repeated" | "ad" | "monetag_ad";
+  task_type: "one_time" | "repeated" | "ad" | "monetag_ad" | "social_share";
   requires_game_id?: boolean;
 };
 
@@ -20,7 +20,9 @@ export default function CompactTaskCard({
   onClick: () => void;
   userStatus?: "available" | "pending" | "approved" | "rejected";
 }) {
-  const type = task.task_type === "repeated"
+  const type = task.task_type === "social_share"
+    ? { label: "↗ Share Task", color: "bg-violet-500" }
+    : task.task_type === "repeated"
     ? { label: "↻ Repeated", color: "bg-emerald-500" }
     : { label: "1× One-Time", color: "bg-blue-500" };
 
